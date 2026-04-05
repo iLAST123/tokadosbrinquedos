@@ -136,6 +136,35 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f1fa;color:#333;min-h
 .btn-conf-cancel{background:#f0f0f0;color:#555;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold}
 .btn-conf-ok{background:var(--red);color:white;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold}
 
+/* ===== SECTION TABS ===== */
+.admin-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid #eee}
+.admin-tab{background:none;border:none;padding:10px 22px;font-size:14px;font-weight:bold;color:#888;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;font-family:inherit;display:flex;align-items:center;gap:8px}
+.admin-tab.active{color:var(--purple);border-bottom-color:var(--purple)}
+.admin-tab:hover:not(.active){color:#555;background:#f8f5ff}
+
+/* ===== BANNERS ===== */
+.banner-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.banner-toolbar h2{font-size:20px;font-weight:bold;color:#333;margin-right:auto}
+.banner-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.banner-card{background:white;border-radius:14px;overflow:hidden;border:1px solid #eee;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:box-shadow .2s}
+.banner-card:hover{box-shadow:0 4px 18px rgba(0,0,0,.1)}
+.banner-preview{height:120px;display:flex;align-items:flex-end;padding:16px;position:relative}
+.banner-prev-content h3{color:white;font-size:15px;font-weight:900;text-shadow:1px 1px 4px rgba(0,0,0,.35);line-height:1.2;margin:0}
+.banner-prev-content p{color:rgba(255,255,255,.85);font-size:11px;margin-top:3px}
+.banner-prev-cta{display:inline-block;background:white;color:#333;font-size:10px;font-weight:bold;padding:3px 10px;border-radius:10px;margin-top:6px}
+.banner-badge{position:absolute;font-size:10px;font-weight:bold;padding:3px 8px;border-radius:20px}
+.banner-badge-on{top:8px;right:8px;background:#e8f5e9;color:#2e7d32}
+.banner-badge-off{top:8px;right:8px;background:#ffeaea;color:var(--red)}
+.banner-badge-ord{top:8px;left:8px;background:rgba(0,0,0,.35);color:white}
+.banner-actions{padding:12px 14px;display:flex;gap:8px;border-top:1px solid #f5f5f5}
+.banner-empty{text-align:center;padding:60px 20px;color:#aaa;grid-column:1/-1}
+.banner-empty i{font-size:48px;color:#ddd;display:block;margin-bottom:14px}
+.grad-presets{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+.grad-preset{width:34px;height:34px;border-radius:8px;cursor:pointer;border:2.5px solid transparent;transition:border-color .15s;flex-shrink:0}
+.grad-preset:hover{border-color:#aaa}
+.grad-preset.sel{border-color:#333!important;box-shadow:0 0 0 2px white,0 0 0 4px #333}
+.bg-live-preview{width:100%;height:56px;border-radius:10px;margin-top:8px;transition:background .3s;border:1px solid #eee}
+
 @media(max-width:768px){
   .stats-row{grid-template-columns:1fr 1fr}
   .form-row{grid-template-columns:1fr}
@@ -192,6 +221,15 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f1fa;color:#333;min-h
   </header>
 
   <div class="admin-body">
+
+    <!-- TABS -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" id="tab-btn-produtos" onclick="switchTab('produtos')"><i class="fas fa-box"></i> Produtos</button>
+      <button class="admin-tab" id="tab-btn-banners" onclick="switchTab('banners')"><i class="fas fa-images"></i> Banners</button>
+    </div>
+
+    <!-- ===== SEÇÃO PRODUTOS ===== -->
+    <div id="sec-produtos">
     <!-- STATS -->
     <div class="stats-row">
       <div class="stat-card purple">
@@ -255,8 +293,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f1fa;color:#333;min-h
         <tbody id="prodTableBody"></tbody>
       </table>
     </div>
-  </div>
-</div>
+    </div><!-- /sec-produtos -->
+
+    <!-- ===== SEÇÃO BANNERS ===== -->
+    <div id="sec-banners" style="display:none">
+      <div class="banner-toolbar">
+        <h2>🖼️ Banners</h2>
+        <button class="btn-new" onclick="openBannerModal()"><i class="fas fa-plus"></i> Novo Banner</button>
+      </div>
+      <div class="banner-grid" id="bannerGrid"></div>
+    </div>
+
+  </div><!-- /admin-body -->
+</div><!-- /adminApp -->
 
 <!-- ===== MODAL PRODUTO ===== -->
 <div class="modal-overlay" id="modalOverlay">
@@ -356,6 +405,89 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f1fa;color:#333;min-h
   </div>
 </div>
 
+<!-- ===== MODAL BANNER ===== -->
+<div class="modal-overlay" id="bannerModalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="bannerModalTitle"><i class="fas fa-plus-circle"></i> Novo Banner</h2>
+      <button class="modal-close" onclick="closeBannerModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Título <span class="req">*</span></label>
+          <input type="text" id="bTitle" placeholder="Ex: Semana dos Brinquedos! 🎉">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Subtítulo</label>
+          <input type="text" id="bSubtitle" placeholder="Ex: Até 60% OFF nos melhores brinquedos">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Cor/gradiente de fundo <span class="req">*</span></label>
+          <div class="grad-presets" id="gradPresets"></div>
+          <input type="text" id="bBg" placeholder="Ex: linear-gradient(135deg,#4A2483,#7C3AED)" oninput="updateBgPreview()">
+          <div class="bg-live-preview" id="bgPreview"></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Texto do botão CTA</label>
+          <input type="text" id="bCtaText" placeholder="Ex: Aproveitar agora">
+        </div>
+        <div class="form-group">
+          <label>Ação do botão</label>
+          <select id="bCtaAction">
+            <option value="showCat('todos')">Todos os produtos</option>
+            <option value="showCat('bonecas')">Bonecas</option>
+            <option value="showCat('action')">Ação e Aventura</option>
+            <option value="showCat('jogos')">Jogos</option>
+            <option value="showCat('veiculos')">Veículos</option>
+            <option value="showCat('bebe')">Bebê</option>
+            <option value="showCat('tecnologia')">Tecnologia</option>
+            <option value="showCat('geeks')">Geeks</option>
+            <option value="showCat('esportes')">Esportes</option>
+            <option value="showCat('novidades')">Novidades</option>
+            <option value="showCat('ofertas')">Ofertas</option>
+            <option value="goHome()">Página inicial</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Ordem de exibição</label>
+          <input type="number" id="bOrder" min="1" max="20" value="1">
+          <div class="hint">Banners são exibidos do menor para o maior número</div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <label><i class="fas fa-eye" style="color:var(--purple)"></i> Banner ativo?</label>
+        <label class="toggle"><input type="checkbox" id="bActive" checked><div class="toggle-slider"></div></label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeBannerModal()">Cancelar</button>
+        <button class="btn-save" onclick="saveBanner()"><i class="fas fa-save"></i> Salvar banner</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFIRM DELETE BANNER ===== -->
+<div class="confirm-overlay" id="confirmBannerOverlay">
+  <div class="confirm-box">
+    <i class="fas fa-trash-alt"></i>
+    <h3>Excluir banner?</h3>
+    <p id="confirmBannerMsg">Esta ação não pode ser desfeita.</p>
+    <div class="confirm-btns">
+      <button class="btn-conf-cancel" onclick="closeConfirmBanner()">Cancelar</button>
+      <button class="btn-conf-ok" onclick="doDeleteBanner()">Sim, excluir</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== CONFIRM DELETE ===== -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
@@ -425,6 +557,182 @@ async function getProds() {
 async function loadAdmin() {
   await renderStats();
   await renderTable();
+}
+
+// =====================
+//  SECTION TABS
+// =====================
+function switchTab(tab) {
+  document.getElementById('sec-produtos').style.display = tab === 'produtos' ? 'block' : 'none';
+  document.getElementById('sec-banners').style.display  = tab === 'banners'  ? 'block' : 'none';
+  document.getElementById('tab-btn-produtos').classList.toggle('active', tab === 'produtos');
+  document.getElementById('tab-btn-banners').classList.toggle('active',  tab === 'banners');
+  if (tab === 'banners') loadBanners();
+}
+
+// =====================
+//  BANNERS
+// =====================
+const GRADIENTS = [
+  'linear-gradient(135deg,#4A2483,#7C3AED)',
+  'linear-gradient(135deg,#E91E8C,#FF6B6B)',
+  'linear-gradient(135deg,#1A7A4A,#2ECC71)',
+  'linear-gradient(135deg,#FF6B00,#FFB300)',
+  'linear-gradient(135deg,#1565C0,#7C4DFF)',
+  'linear-gradient(135deg,#00897B,#26C6DA)',
+  'linear-gradient(135deg,#C62828,#FF5252)',
+  'linear-gradient(135deg,#212121,#546E7A)',
+];
+
+let editingBannerId = null;
+
+async function loadBanners() {
+  try {
+    const snap = await db.collection('banners').orderBy('order').get();
+    renderBanners(snap.docs.map(d => ({ ...d.data(), _docId: d.id })));
+  } catch(e) {
+    renderBanners([]);
+  }
+}
+
+function renderBanners(banners) {
+  const grid = document.getElementById('bannerGrid');
+  if (!banners.length) {
+    grid.innerHTML = `<div class="banner-empty">
+      <i class="fas fa-images"></i>
+      <p>Nenhum banner cadastrado ainda.</p>
+      <p style="font-size:13px;margin-top:4px">Clique em "Novo Banner" para criar o primeiro!</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = banners.map(b => `
+    <div class="banner-card">
+      <div class="banner-preview" style="background:${b.bg}">
+        <div class="banner-prev-content">
+          <h3>${b.title}</h3>
+          ${b.subtitle ? `<p>${b.subtitle}</p>` : ''}
+          ${b.ctaText ? `<span class="banner-prev-cta">${b.ctaText}</span>` : ''}
+        </div>
+        <span class="banner-badge banner-badge-ord">#${b.order}</span>
+        <span class="banner-badge ${b.active ? 'banner-badge-on' : 'banner-badge-off'}">${b.active ? '● Ativo' : '● Inativo'}</span>
+      </div>
+      <div class="banner-actions">
+        <button class="btn-edit" onclick="openBannerModal('${b._docId}')"><i class="fas fa-edit"></i> Editar</button>
+        <button class="btn-del" onclick="askDeleteBanner('${b._docId}','${b.title.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i> Excluir</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openBannerModal(docId = null) {
+  editingBannerId = docId;
+  document.getElementById('bannerModalTitle').innerHTML = docId
+    ? '<i class="fas fa-edit"></i> Editar Banner'
+    : '<i class="fas fa-plus-circle"></i> Novo Banner';
+
+  // Render gradient presets
+  document.getElementById('gradPresets').innerHTML = GRADIENTS.map(g =>
+    `<div class="grad-preset" style="background:${g}" title="${g}" onclick="selectGrad(this,'${g}')"></div>`
+  ).join('');
+
+  if (docId) {
+    db.collection('banners').doc(docId).get().then(doc => {
+      const b = doc.data();
+      document.getElementById('bTitle').value      = b.title || '';
+      document.getElementById('bSubtitle').value   = b.subtitle || '';
+      document.getElementById('bBg').value         = b.bg || '';
+      document.getElementById('bCtaText').value    = b.ctaText || '';
+      document.getElementById('bCtaAction').value  = b.ctaAction || "showCat('todos')";
+      document.getElementById('bOrder').value      = b.order || 1;
+      document.getElementById('bActive').checked   = b.active !== false;
+      updateBgPreview();
+      highlightGrad(b.bg);
+    });
+  } else {
+    document.getElementById('bTitle').value     = '';
+    document.getElementById('bSubtitle').value  = '';
+    document.getElementById('bBg').value        = GRADIENTS[0];
+    document.getElementById('bCtaText').value   = '';
+    document.getElementById('bCtaAction').value = "showCat('todos')";
+    document.getElementById('bOrder').value     = 1;
+    document.getElementById('bActive').checked  = true;
+    updateBgPreview();
+    highlightGrad(GRADIENTS[0]);
+  }
+
+  document.getElementById('bannerModalOverlay').classList.add('open');
+}
+
+function closeBannerModal() {
+  document.getElementById('bannerModalOverlay').classList.remove('open');
+  editingBannerId = null;
+}
+
+function selectGrad(el, g) {
+  document.getElementById('bBg').value = g;
+  updateBgPreview();
+  highlightGrad(g);
+}
+
+function highlightGrad(g) {
+  document.querySelectorAll('.grad-preset').forEach(el => {
+    el.classList.toggle('sel', el.title === g);
+  });
+}
+
+function updateBgPreview() {
+  const bg = document.getElementById('bBg').value.trim();
+  document.getElementById('bgPreview').style.background = bg || '#eee';
+}
+
+async function saveBanner() {
+  const title = document.getElementById('bTitle').value.trim();
+  const bg    = document.getElementById('bBg').value.trim();
+  if (!title || !bg) {
+    toast('⚠️ Preencha o título e o fundo do banner', 'err');
+    return;
+  }
+  const banner = {
+    title,
+    subtitle:  document.getElementById('bSubtitle').value.trim(),
+    bg,
+    ctaText:   document.getElementById('bCtaText').value.trim(),
+    ctaAction: document.getElementById('bCtaAction').value,
+    order:     parseInt(document.getElementById('bOrder').value) || 1,
+    active:    document.getElementById('bActive').checked,
+    updatedAt: Date.now(),
+  };
+  if (editingBannerId) {
+    await db.collection('banners').doc(editingBannerId).update(banner);
+    toast('✅ Banner atualizado!', 'ok');
+  } else {
+    banner.createdAt = Date.now();
+    await db.collection('banners').add(banner);
+    toast('✅ Banner criado!', 'ok');
+  }
+  closeBannerModal();
+  loadBanners();
+}
+
+let deleteBannerId = null;
+
+function askDeleteBanner(docId, title) {
+  deleteBannerId = docId;
+  document.getElementById('confirmBannerMsg').textContent = `Excluir o banner "${title}"? Esta ação não pode ser desfeita.`;
+  document.getElementById('confirmBannerOverlay').classList.add('open');
+}
+
+function closeConfirmBanner() {
+  document.getElementById('confirmBannerOverlay').classList.remove('open');
+  deleteBannerId = null;
+}
+
+async function doDeleteBanner() {
+  if (!deleteBannerId) return;
+  await db.collection('banners').doc(deleteBannerId).delete();
+  closeConfirmBanner();
+  loadBanners();
+  toast('🗑️ Banner excluído', 'ok');
 }
 
 async function renderStats() {
@@ -641,6 +949,12 @@ window.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('confirmOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeConfirm();
+  });
+  document.getElementById('bannerModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeBannerModal();
+  });
+  document.getElementById('confirmBannerOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeConfirmBanner();
   });
 });
 </script>

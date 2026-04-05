@@ -1048,6 +1048,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderCarousel('carousel-top',    topSellers());
   renderCarousel('carousel-new',    newArrivals());
   renderCarousel('carousel-offers', bigOffers());
+  await loadBannersFromDB();
   startHero();
 });
 
@@ -1055,7 +1056,34 @@ document.addEventListener('DOMContentLoaded', async () => {
 //        HERO SLIDER
 // ===========================
 let slideIdx = 0;
-const SLIDE_TOTAL = 4;
+let SLIDE_TOTAL = 4;
+
+async function loadBannersFromDB() {
+  try {
+    const snap = await db.collection('banners').orderBy('order').get();
+    const banners = snap.docs.map(d => d.data()).filter(b => b.active !== false);
+    if (banners.length > 0) renderHeroBanners(banners);
+  } catch(e) { /* sem banners no Firestore: mantém slides padrão */ }
+}
+
+function renderHeroBanners(banners) {
+  document.getElementById('heroSlides').innerHTML = banners.map(b => `
+    <div class="hero-slide" style="background:${b.bg}">
+      <div>
+        <h2>${b.title}</h2>
+        ${b.subtitle ? `<p>${b.subtitle}</p>` : ''}
+        ${b.ctaText ? `<button class="hero-cta" onclick="${b.ctaAction}">${b.ctaText}</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('heroDots').innerHTML = banners.map((_, i) =>
+    `<div class="hero-dot ${i===0?'active':''}" onclick="goSlide(${i})"></div>`
+  ).join('');
+
+  SLIDE_TOTAL = banners.length;
+  slideIdx = 0;
+}
 function startHero() {
   setInterval(() => { slideIdx = (slideIdx + 1) % SLIDE_TOTAL; moveSlide(slideIdx); }, 4500);
 }
