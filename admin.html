@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – Toka dos Brinquedos</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--purple:#4A2483;--purple-dark:#3A1A6E;--orange:#FF6B00;--green:#00A651;--cream:#FFF5E6;--yellow:#FFD700;--red:#E53935}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f4f1fa;color:#333;min-height:100vh}
+
+/* ===== LOGIN ===== */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--purple-dark),var(--purple))}
+.login-box{background:white;border-radius:20px;padding:44px 40px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center}
+.login-logo{font-size:48px;margin-bottom:8px}
+.login-box h1{font-size:22px;color:var(--purple);margin-bottom:4px}
+.login-box p{font-size:13px;color:#888;margin-bottom:28px}
+.login-field{margin-bottom:16px;text-align:left}
+.login-field label{font-size:12px;font-weight:bold;color:#555;display:block;margin-bottom:6px}
+.login-field input{width:100%;padding:12px 16px;border:1.5px solid #ddd;border-radius:10px;font-size:14px;outline:none;transition:border-color .2s}
+.login-field input:focus{border-color:var(--purple)}
+.btn-login{width:100%;background:var(--purple);color:white;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:8px;transition:background .2s}
+.btn-login:hover{background:var(--purple-dark)}
+.login-err{background:#ffeaea;color:var(--red);border-radius:8px;padding:10px 14px;font-size:13px;margin-top:12px;display:none}
+
+/* ===== ADMIN LAYOUT ===== */
+#adminApp{display:none;min-height:100vh}
+.admin-header{background:var(--purple);color:white;padding:0 28px;display:flex;align-items:center;gap:16px;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.admin-header .logo{font-size:20px;font-weight:900;display:flex;align-items:center;gap:10px}
+.admin-header .logo span{font-size:26px}
+.admin-header .badge{background:var(--orange);font-size:11px;font-weight:bold;padding:3px 10px;border-radius:20px}
+.admin-header .spacer{flex:1}
+.btn-logout{background:rgba(255,255,255,.15);border:none;color:white;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;transition:background .2s}
+.btn-logout:hover{background:rgba(255,255,255,.25)}
+.btn-site{background:var(--orange);border:none;color:white;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;text-decoration:none;transition:background .2s}
+.btn-site:hover{background:#e05a00}
+
+.admin-body{max-width:1300px;margin:0 auto;padding:28px 24px}
+
+/* ===== STATS ===== */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:white;border-radius:14px;padding:20px;border-left:4px solid transparent;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.stat-card.purple{border-color:var(--purple)}
+.stat-card.orange{border-color:var(--orange)}
+.stat-card.green{border-color:var(--green)}
+.stat-card.yellow{border-color:#F57F17}
+.stat-num{font-size:32px;font-weight:900;color:#222;line-height:1}
+.stat-label{font-size:12px;color:#888;margin-top:4px}
+.stat-icon{font-size:28px;float:right;margin-top:-4px}
+
+/* ===== TOOLBAR ===== */
+.toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.toolbar h2{font-size:20px;font-weight:bold;color:#333;margin-right:auto}
+.search-admin{padding:9px 16px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;width:240px;transition:border-color .2s}
+.search-admin:focus{border-color:var(--purple)}
+.filter-cat{padding:9px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;outline:none;cursor:pointer;color:#333}
+.btn-new{background:var(--purple);color:white;border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:7px;transition:background .2s;white-space:nowrap}
+.btn-new:hover{background:var(--purple-dark)}
+
+/* ===== TABLE ===== */
+.table-wrap{background:white;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
+.prod-table{width:100%;border-collapse:collapse;font-size:13px}
+.prod-table thead tr{background:#f8f5ff}
+.prod-table th{padding:13px 14px;text-align:left;font-weight:bold;color:#555;font-size:12px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.prod-table td{padding:12px 14px;border-top:1px solid #f0f0f0;vertical-align:middle}
+.prod-table tr:hover td{background:#faf7ff}
+.prod-img{width:52px;height:52px;border-radius:8px;object-fit:cover;background:#f0e8f8}
+.prod-name-cell{max-width:220px}
+.prod-name-cell strong{display:block;font-size:13px;line-height:1.3;margin-bottom:2px}
+.prod-name-cell span{font-size:11px;color:#888}
+.badge-cat{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:bold;background:#ede0ff;color:var(--purple)}
+.badge-new{background:#e8f5e9;color:#2e7d32}
+.badge-off{background:#fff3e0;color:#e65100}
+.price-cell .cur{font-size:15px;font-weight:bold;color:#222}
+.price-cell .old{font-size:11px;color:#bbb;text-decoration:line-through}
+.price-cell .disc{font-size:11px;font-weight:bold;color:var(--red)}
+.action-btns{display:flex;gap:6px;white-space:nowrap}
+.btn-edit{background:#ede0ff;color:var(--purple);border:none;padding:7px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:bold;display:flex;align-items:center;gap:5px;transition:background .2s}
+.btn-edit:hover{background:#dcceff}
+.btn-del{background:#ffeaea;color:var(--red);border:none;padding:7px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:bold;display:flex;align-items:center;gap:5px;transition:background .2s}
+.btn-del:hover{background:#ffcdd2}
+.empty-state{text-align:center;padding:60px 20px;color:#aaa}
+.empty-state i{font-size:48px;margin-bottom:14px;display:block;color:#ddd}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;display:none}
+.modal-overlay.open{display:flex}
+.modal{background:white;border-radius:18px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-head{padding:22px 28px 0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1;border-bottom:1px solid #f0f0f0;padding-bottom:16px;margin-bottom:4px}
+.modal-head h2{font-size:18px;font-weight:bold;color:var(--purple);display:flex;align-items:center;gap:8px}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:#aaa;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.modal-close:hover{background:#f0f0f0;color:#555}
+.modal-body{padding:20px 28px 28px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.form-row.full{grid-template-columns:1fr}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:12px;font-weight:bold;color:#555;display:flex;align-items:center;gap:5px}
+.form-group label .req{color:var(--red)}
+.form-group input,.form-group select,.form-group textarea{padding:10px 13px;border:1.5px solid #ddd;border-radius:8px;font-size:14px;outline:none;font-family:inherit;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--purple)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group .hint{font-size:11px;color:#aaa}
+.img-preview{width:100%;height:120px;border-radius:10px;object-fit:cover;background:#f0e8f8;display:block;margin-top:6px;border:1px solid #eee}
+.img-placeholder{width:100%;height:120px;border-radius:10px;background:#f0e8f8;display:flex;align-items:center;justify-content:center;color:#ccc;font-size:32px;margin-top:6px;border:1px dashed #ddd}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#f8f5ff;border-radius:10px;margin-bottom:16px}
+.toggle-row label{font-size:14px;font-weight:600;color:#444;display:flex;align-items:center;gap:8px}
+.toggle{position:relative;width:44px;height:24px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#ccc;border-radius:12px;cursor:pointer;transition:.3s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:var(--green)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(20px)}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;padding-top:16px;border-top:1px solid #f0f0f0;margin-top:4px}
+.btn-cancel{background:#f0f0f0;color:#555;border:none;padding:11px 22px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;transition:background .2s}
+.btn-cancel:hover{background:#e0e0e0}
+.btn-save{background:var(--purple);color:white;border:none;padding:11px 28px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;display:flex;align-items:center;gap:7px;transition:background .2s}
+.btn-save:hover{background:var(--purple-dark)}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:#333;color:white;padding:12px 24px;border-radius:30px;font-size:14px;font-weight:500;z-index:9999;transition:transform .35s ease;pointer-events:none;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.ok{background:#2e7d32}
+.toast.err{background:var(--red)}
+
+/* ===== CONFIRM ===== */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:center;justify-content:center}
+.confirm-overlay.open{display:flex}
+.confirm-box{background:white;border-radius:16px;padding:28px;max-width:380px;width:90%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.2)}
+.confirm-box i{font-size:44px;color:var(--red);margin-bottom:12px;display:block}
+.confirm-box h3{font-size:18px;font-weight:bold;margin-bottom:8px}
+.confirm-box p{font-size:14px;color:#666;margin-bottom:22px;line-height:1.5}
+.confirm-btns{display:flex;gap:10px;justify-content:center}
+.btn-conf-cancel{background:#f0f0f0;color:#555;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold}
+.btn-conf-ok{background:var(--red);color:white;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold}
+
+@media(max-width:768px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .toolbar{flex-direction:column;align-items:stretch}
+  .search-admin{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🧸</div>
+    <h1>Painel Administrativo</h1>
+    <p>Toka dos Brinquedos — Acesso restrito</p>
+    <div class="login-field">
+      <label>Usuário</label>
+      <input type="text" id="loginUser" placeholder="Digite seu usuário" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="Digite sua senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Entrar</button>
+    <div class="login-err" id="loginErr">Usuário ou senha incorretos.</div>
+  </div>
+</div>
+
+<!-- ===== ADMIN APP ===== -->
+<div id="adminApp">
+  <header class="admin-header">
+    <div class="logo"><span>🧸</span> Toka dos Brinquedos <div class="badge">ADMIN</div></div>
+    <div class="spacer"></div>
+    <a href="index.html" target="_blank" class="btn-site"><i class="fas fa-external-link-alt"></i> Ver site</a>
+    <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+  </header>
+
+  <div class="admin-body">
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card purple">
+        <div class="stat-icon">📦</div>
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-label">Total de produtos</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon">✨</div>
+        <div class="stat-num" id="statNew">0</div>
+        <div class="stat-label">Novidades</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">🏷️</div>
+        <div class="stat-num" id="statOff">0</div>
+        <div class="stat-label">Em promoção</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-icon">➕</div>
+        <div class="stat-num" id="statAdmin">0</div>
+        <div class="stat-label">Adicionados por você</div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <h2>📦 Produtos</h2>
+      <input class="search-admin" id="searchAdmin" type="text" placeholder="🔍 Buscar produto..." oninput="renderTable()">
+      <select class="filter-cat" id="filterCat" onchange="renderTable()">
+        <option value="">Todas as categorias</option>
+        <option value="bonecas">Bonecas</option>
+        <option value="action">Ação e Aventura</option>
+        <option value="jogos">Jogos e Tabuleiro</option>
+        <option value="veiculos">Veículos</option>
+        <option value="bebe">Bebê</option>
+        <option value="tecnologia">Tecnologia</option>
+        <option value="geeks">Geeks e Colecionáveis</option>
+        <option value="esportes">Esportes</option>
+        <option value="brinquedos">Brinquedos</option>
+        <option value="quebra">Quebra-cabeça</option>
+        <option value="importados">Importados</option>
+        <option value="fantasias">Fantasias</option>
+      </select>
+      <button class="btn-new" onclick="openModal()"><i class="fas fa-plus"></i> Novo Produto</button>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <table class="prod-table">
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>Produto</th>
+            <th>Categoria</th>
+            <th>Faixa etária</th>
+            <th>Preço</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="prodTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL PRODUTO ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle"><i class="fas fa-plus-circle"></i> Novo Produto</h2>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Nome do produto <span class="req">*</span></label>
+          <input type="text" id="fName" placeholder="Ex: Boneca Barbie Fashionista Deluxe">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Categoria <span class="req">*</span></label>
+          <select id="fCat">
+            <option value="">Selecione...</option>
+            <option value="bonecas">Bonecas</option>
+            <option value="action">Ação e Aventura</option>
+            <option value="jogos">Jogos e Tabuleiro</option>
+            <option value="veiculos">Veículos</option>
+            <option value="bebe">Bebê</option>
+            <option value="tecnologia">Tecnologia</option>
+            <option value="geeks">Geeks e Colecionáveis</option>
+            <option value="esportes">Esportes</option>
+            <option value="brinquedos">Brinquedos</option>
+            <option value="quebra">Quebra-cabeça</option>
+            <option value="importados">Importados</option>
+            <option value="fantasias">Fantasias</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Faixa etária <span class="req">*</span></label>
+          <select id="fAge">
+            <option value="">Selecione...</option>
+            <option value="ate-1">Até 1 ano</option>
+            <option value="1-2">1 a 2 anos</option>
+            <option value="3-5">3 a 5 anos</option>
+            <option value="6-8">6 a 8 anos</option>
+            <option value="9+">9 anos ou mais</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preço atual (R$) <span class="req">*</span></label>
+          <input type="number" id="fPrice" placeholder="Ex: 89.99" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label>Preço antigo (R$) <span style="color:#aaa;font-weight:normal">(opcional — cria desconto)</span></label>
+          <input type="number" id="fOld" placeholder="Ex: 129.99" step="0.01" min="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Marca</label>
+          <input type="text" id="fBrand" placeholder="Ex: Mattel, LEGO, Hasbro...">
+        </div>
+        <div class="form-group">
+          <label>Avaliação (0–5)</label>
+          <input type="number" id="fRating" placeholder="Ex: 4.7" step="0.1" min="0" max="5">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>URL da imagem principal <span class="req">*</span></label>
+          <input type="url" id="fImg" placeholder="https://..." oninput="previewImg()">
+          <div class="hint">Cole o link direto de uma imagem do produto</div>
+          <div id="imgPreviewWrap"><div class="img-placeholder"><i class="fas fa-image"></i></div></div>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Descrição do produto</label>
+          <textarea id="fDesc" placeholder="Descreva o produto: características, material, indicações..."></textarea>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Tags (separadas por vírgula)</label>
+          <input type="text" id="fTags" placeholder="Ex: boneca, meninas, fashion, presente">
+          <div class="hint">Ajudam na busca dentro do site</div>
+        </div>
+      </div>
+      <div class="toggle-row">
+        <label><i class="fas fa-star" style="color:var(--orange)"></i> Marcar como NOVIDADE?</label>
+        <label class="toggle"><input type="checkbox" id="fIsNew"><div class="toggle-slider"></div></label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+        <button class="btn-save" onclick="saveProduct()"><i class="fas fa-save"></i> Salvar produto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFIRM DELETE ===== -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <i class="fas fa-trash-alt"></i>
+    <h3>Excluir produto?</h3>
+    <p id="confirmMsg">Esta ação não pode ser desfeita.</p>
+    <div class="confirm-btns">
+      <button class="btn-conf-cancel" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn-conf-ok" onclick="confirmDelete()">Sim, excluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =====================
+//  AUTH
+// =====================
+const USERS = [
+  { user: 'funcionaria', pass: 'toka2025' },
+  { user: 'admin',       pass: 'admin123' }
+];
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const ok = USERS.some(x => x.user === u && x.pass === p);
+  const errEl = document.getElementById('loginErr');
+  if (ok) {
+    sessionStorage.setItem('toka_admin_ok', '1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    loadAdmin();
+  } else {
+    errEl.style.display = 'block';
+    setTimeout(() => errEl.style.display = 'none', 3000);
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('toka_admin_ok');
+  location.reload();
+}
+
+// =====================
+//  STORAGE
+// =====================
+function getProds() {
+  try { return JSON.parse(localStorage.getItem('toka_produtos') || '[]'); } catch(e) { return []; }
+}
+function saveProds(arr) {
+  localStorage.setItem('toka_produtos', JSON.stringify(arr));
+}
+
+// =====================
+//  LOAD ADMIN
+// =====================
+function loadAdmin() {
+  renderStats();
+  renderTable();
+}
+
+function renderStats() {
+  const prods = getProds();
+  document.getElementById('statTotal').textContent = prods.length;
+  document.getElementById('statNew').textContent = prods.filter(p => p.isNew).length;
+  document.getElementById('statOff').textContent = prods.filter(p => p.old && p.old > p.price).length;
+  document.getElementById('statAdmin').textContent = prods.length;
+}
+
+// =====================
+//  TABLE
+// =====================
+const CAT_LABELS = {
+  bonecas:'Bonecas', action:'Ação e Aventura', jogos:'Jogos', veiculos:'Veículos',
+  bebe:'Bebê', tecnologia:'Tecnologia', geeks:'Geeks', esportes:'Esportes',
+  brinquedos:'Brinquedos', quebra:'Quebra-cabeça', importados:'Importados', fantasias:'Fantasias'
+};
+const AGE_LABELS = {'ate-1':'Até 1 ano','1-2':'1–2 anos','3-5':'3–5 anos','6-8':'6–8 anos','9+':'9+ anos'};
+
+function renderTable() {
+  const q = document.getElementById('searchAdmin').value.toLowerCase();
+  const cat = document.getElementById('filterCat').value;
+  let prods = getProds();
+
+  if (q) prods = prods.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    (p.brand||'').toLowerCase().includes(q) ||
+    (p.cat||'').toLowerCase().includes(q)
+  );
+  if (cat) prods = prods.filter(p => p.cat === cat);
+
+  const tbody = document.getElementById('prodTableBody');
+  if (!prods.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
+      <i class="fas fa-box-open"></i>
+      <p>Nenhum produto cadastrado ainda.</p>
+      <p style="font-size:13px;margin-top:4px">Clique em "Novo Produto" para começar!</p>
+    </div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = prods.map(p => {
+    const disc = p.old && p.old > p.price ? Math.round((1 - p.price/p.old)*100) : 0;
+    const priceStr = 'R$ ' + Number(p.price).toFixed(2).replace('.',',');
+    const oldStr = p.old ? 'R$ ' + Number(p.old).toFixed(2).replace('.',',') : '';
+    const img = p.img || '';
+    return `
+    <tr>
+      <td>${img ? `<img class="prod-img" src="${img}" alt="${p.name}">` : '<div class="prod-img" style="display:flex;align-items:center;justify-content:center;font-size:22px">🧸</div>'}</td>
+      <td class="prod-name-cell">
+        <strong>${p.name}</strong>
+        <span>${p.brand || '—'}</span>
+      </td>
+      <td><span class="badge-cat">${CAT_LABELS[p.cat] || p.cat}</span></td>
+      <td>${AGE_LABELS[p.age] || p.age || '—'}</td>
+      <td class="price-cell">
+        <div class="cur">${priceStr}</div>
+        ${oldStr ? `<div class="old">${oldStr}</div>` : ''}
+        ${disc > 0 ? `<div class="disc">-${disc}%</div>` : ''}
+      </td>
+      <td>
+        ${p.isNew ? '<span class="badge-cat badge-new">✨ Novidade</span>' : ''}
+        ${disc > 0 ? '<span class="badge-cat badge-off">🏷️ Oferta</span>' : ''}
+        ${!p.isNew && !disc ? '<span style="font-size:12px;color:#aaa">Normal</span>' : ''}
+      </td>
+      <td>
+        <div class="action-btns">
+          <button class="btn-edit" onclick="openModal(${p.id})"><i class="fas fa-edit"></i> Editar</button>
+          <button class="btn-del" onclick="askDelete(${p.id},'${p.name.replace(/'/g,"\\'")}')"><i class="fas fa-trash"></i> Excluir</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// =====================
+//  MODAL
+// =====================
+let editingId = null;
+
+function openModal(id = null) {
+  editingId = id;
+  const prods = getProds();
+  const p = id ? prods.find(x => x.id === id) : null;
+
+  document.getElementById('modalTitle').innerHTML = p
+    ? '<i class="fas fa-edit"></i> Editar Produto'
+    : '<i class="fas fa-plus-circle"></i> Novo Produto';
+
+  document.getElementById('fName').value    = p ? p.name    : '';
+  document.getElementById('fCat').value     = p ? p.cat     : '';
+  document.getElementById('fAge').value     = p ? p.age     : '';
+  document.getElementById('fPrice').value   = p ? p.price   : '';
+  document.getElementById('fOld').value     = p && p.old ? p.old : '';
+  document.getElementById('fBrand').value   = p ? (p.brand||'') : '';
+  document.getElementById('fRating').value  = p ? (p.rating||'4.5') : '4.5';
+  document.getElementById('fImg').value     = p ? (p.img||'')  : '';
+  document.getElementById('fDesc').value    = p ? (p.desc||'') : '';
+  document.getElementById('fTags').value    = p && p.tags ? p.tags.join(', ') : '';
+  document.getElementById('fIsNew').checked = p ? !!p.isNew : false;
+
+  previewImg();
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  editingId = null;
+}
+
+function previewImg() {
+  const url = document.getElementById('fImg').value.trim();
+  const wrap = document.getElementById('imgPreviewWrap');
+  if (url) {
+    wrap.innerHTML = `<img class="img-preview" src="${url}" alt="Preview" onerror="this.style.display='none'">`;
+  } else {
+    wrap.innerHTML = `<div class="img-placeholder"><i class="fas fa-image"></i></div>`;
+  }
+}
+
+function saveProduct() {
+  const name  = document.getElementById('fName').value.trim();
+  const cat   = document.getElementById('fCat').value;
+  const age   = document.getElementById('fAge').value;
+  const price = parseFloat(document.getElementById('fPrice').value);
+  const img   = document.getElementById('fImg').value.trim();
+
+  if (!name || !cat || !age || isNaN(price) || !img) {
+    toast('⚠️ Preencha os campos obrigatórios (*)','err');
+    return;
+  }
+
+  const oldVal = parseFloat(document.getElementById('fOld').value);
+  const tags   = document.getElementById('fTags').value.split(',').map(t=>t.trim()).filter(Boolean);
+
+  const prod = {
+    id:     editingId || Date.now(),
+    name,
+    cat,
+    age,
+    price,
+    old:    isNaN(oldVal) ? null : oldVal,
+    brand:  document.getElementById('fBrand').value.trim(),
+    rating: parseFloat(document.getElementById('fRating').value) || 4.5,
+    reviews: 0,
+    img,
+    imgs:   [img],
+    desc:   document.getElementById('fDesc').value.trim(),
+    tags,
+    isNew:  document.getElementById('fIsNew').checked
+  };
+
+  let prods = getProds();
+  if (editingId) {
+    const idx = prods.findIndex(p => p.id === editingId);
+    if (idx !== -1) { prod.reviews = prods[idx].reviews || 0; prods[idx] = prod; }
+    else prods.push(prod);
+    toast('✅ Produto atualizado com sucesso!','ok');
+  } else {
+    prods.push(prod);
+    toast('✅ Produto adicionado com sucesso!','ok');
+  }
+
+  saveProds(prods);
+  closeModal();
+  renderStats();
+  renderTable();
+}
+
+// =====================
+//  DELETE
+// =====================
+let deleteId = null;
+
+function askDelete(id, name) {
+  deleteId = id;
+  document.getElementById('confirmMsg').textContent = `Tem certeza que deseja excluir "${name}"? Esta ação não pode ser desfeita.`;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  deleteId = null;
+}
+
+function confirmDelete() {
+  if (!deleteId) return;
+  let prods = getProds().filter(p => p.id !== deleteId);
+  saveProds(prods);
+  closeConfirm();
+  renderStats();
+  renderTable();
+  toast('🗑️ Produto excluído','ok');
+}
+
+// =====================
+//  TOAST
+// =====================
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// =====================
+//  INIT
+// =====================
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('toka_admin_ok') === '1') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    loadAdmin();
+  }
+  document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+  document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeConfirm();
+  });
+});
+</script>
+</body>
+</html>
