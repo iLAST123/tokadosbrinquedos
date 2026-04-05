@@ -719,7 +719,7 @@ footer { background: var(--purple-dark); color: white; margin-top: 0; }
 // ===========================
 //        DADOS / PRODUTOS
 // ===========================
-const PRODUCTS = [
+let PRODUCTS = [
   { id:1,  name:"Boneca Barbie Fashionista Ruiva", price:89.99,  old:129.99, rating:4.8, reviews:234, cat:"bonecas",    age:"3-5",  brand:"Mattel",       isNew:false,
     img:"https://picsum.photos/seed/toka_bar01/400/400",
     imgs:["https://picsum.photos/seed/toka_bar01/400/400","https://picsum.photos/seed/toka_bar02/400/400","https://picsum.photos/seed/toka_bar03/400/400"],
@@ -900,6 +900,15 @@ const PRODUCTS = [
     desc:"Kit slime brilhante com 6 cores vibrantes. Textura elástica e suave. Não gruda nas mãos. Fórmula segura e não tóxica. Cada pote vem em embalagem individual. Ideal para vídeos e brincadeiras.",
     tags:["slime","massinha","meninas","sensorial"] },
 ];
+
+// Mescla produtos do painel admin (localStorage)
+try {
+  const adminProds = JSON.parse(localStorage.getItem('toka_produtos') || '[]');
+  if (adminProds.length) {
+    const existingIds = new Set(PRODUCTS.map(p => p.id));
+    adminProds.forEach(p => { if (!existingIds.has(p.id)) PRODUCTS.push(p); });
+  }
+} catch(e) {}
 
 // ===========================
 //           ESTADO
