@@ -273,6 +273,81 @@ footer { background: var(--purple-dark); color: white; margin-top: 0; }
 .hidden { display: none !important; }
 .mt0 { margin-top: 0 !important; }
 
+/* ===== FILTER TOGGLE (mobile) ===== */
+.filter-toggle-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--purple);
+  color: white;
+  border: none;
+  padding: 11px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 14px;
+  font-family: inherit;
+  transition: background .2s;
+}
+.filter-toggle-btn:hover { background: var(--purple-dark); }
+
+/* ===== MOBILE BOTTOM NAV ===== */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e8e8e8;
+  z-index: 1001;
+  box-shadow: 0 -2px 14px rgba(0,0,0,.1);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.mobile-nav-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 56px;
+}
+.mob-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #999;
+  padding: 6px 10px;
+  font-size: 10px;
+  font-family: inherit;
+  position: relative;
+  transition: color .2s;
+  min-width: 52px;
+}
+.mob-nav-btn i { font-size: 20px; }
+.mob-nav-btn.active { color: var(--purple); }
+.mob-nav-btn .mob-badge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  background: var(--orange);
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  pointer-events: none;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1000px) {
   .hero-grid { grid-template-columns: 1fr; }
@@ -280,32 +355,97 @@ footer { background: var(--purple-dark); color: white; margin-top: 0; }
   .footer-top { grid-template-columns: 1fr 1fr; }
   .cat-layout { grid-template-columns: 1fr; }
   .filter-panel { position: static; }
+  .hero-slide h2 { font-size: 32px; }
 }
 @media (max-width: 720px) {
-  .header-top { padding: 10px 16px; gap: 10px; }
+  /* Header: 2 linhas em mobile */
+  .header-top { padding: 10px 16px 8px; gap: 8px; flex-wrap: wrap; }
+  .logo { flex-shrink: 0; }
   .logo-text { font-size: 16px; }
   .logo-sub { display: none; }
+  .hdr-actions { margin-left: auto; flex-shrink: 0; }
   .hdr-btn span { display: none; }
   .hdr-btn { padding: 6px 8px; }
-  .hdr-btn i { font-size: 22px; }
-  .nav-list { padding: 0 16px; }
+  .hdr-btn i { font-size: 21px; }
+  .search-wrap { order: 3; width: 100%; max-width: none; padding-bottom: 4px; }
+
+  /* Announce */
+  .announce { font-size: 11px; overflow-x: auto; white-space: nowrap; padding: 6px 12px; }
+
+  /* Nav */
+  .nav-list { padding: 0 10px; }
+
+  /* Hero */
   .hero-section { padding: 12px 16px; }
+  .hero-main { height: 230px; }
+  .hero-slide { padding: 22px; }
+  .hero-slide h2 { font-size: 24px; }
+  .hero-slide p { font-size: 13px; margin-bottom: 12px; }
+  .hero-cta { padding: 9px 20px; font-size: 13px; }
+
+  /* Promo */
   .promo-strip { padding: 12px 16px; grid-template-columns: 1fr 1fr; }
+
+  /* Sections */
   .section { padding: 18px 16px; }
+  .sec-title { font-size: 16px; }
+
+  /* Brands */
   .brands-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Category icons */
+  .cat-icon-circle { width: 62px; height: 62px; font-size: 24px; }
+  .cat-icon { min-width: 68px; }
+
+  /* Product cards */
+  .pcard { min-width: 165px; }
+  .pcard-img { height: 150px; }
+
+  /* Product detail */
   .pd-grid { grid-template-columns: 1fr; }
-  .pd-wrap { padding: 16px; }
+  .pd-wrap { padding: 14px; }
   .pd-images { position: static; }
+  .pd-main { height: 280px; }
+  .price-main { font-size: 30px; }
+  .tab-nav { overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-nav button { padding: 10px 13px; font-size: 13px; }
+
+  /* Category / filter */
   .cat-layout { padding: 14px 16px 30px; }
+  .filter-toggle-btn { display: flex; }
+  .filter-panel { display: none; }
+  .filter-panel.open { display: block; }
+
+  /* Footer */
   .footer-top { padding: 24px 16px; grid-template-columns: 1fr; }
   .footer-bottom { padding: 16px; }
+
+  /* Results */
   .results-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Toast — above bottom nav */
+  .toast { right: 16px; left: 16px; max-width: none; bottom: 68px; }
+
+  /* Bottom nav + body padding */
+  .mobile-nav { display: block; }
+  body { padding-bottom: 64px; }
 }
 @media (max-width: 480px) {
   .age-pills { gap: 8px; }
-  .age-pill { padding: 9px 16px; font-size: 13px; }
+  .age-pill { padding: 9px 14px; font-size: 12px; }
   .promo-item { padding: 12px; }
   .promo-item p { display: none; }
+  .hero-main { height: 195px; }
+  .hero-slide { padding: 18px; }
+  .hero-slide h2 { font-size: 20px; }
+  .hero-slide p { font-size: 12px; margin-bottom: 10px; }
+  .brands-grid { grid-template-columns: 1fr; }
+  .pcard { min-width: 148px; }
+  .pcard-img { height: 130px; }
+  .pd-main { height: 240px; }
+  .sec-title { font-size: 15px; }
+  .results-hdr h2 { font-size: 17px; }
 }
 </style>
 </head>
@@ -361,6 +501,33 @@ footer { background: var(--purple-dark); color: white; margin-top: 0; }
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav" aria-label="Navegação mobile">
+  <div class="mobile-nav-inner">
+    <button class="mob-nav-btn active" id="mobHome" onclick="goHome()">
+      <i class="fas fa-home"></i>
+      <span>Início</span>
+    </button>
+    <button class="mob-nav-btn" id="mobCat" onclick="showCat('todos')">
+      <i class="fas fa-th-large"></i>
+      <span>Categorias</span>
+    </button>
+    <button class="mob-nav-btn" id="mobSearch" onclick="focusSearch()">
+      <i class="fas fa-search"></i>
+      <span>Buscar</span>
+    </button>
+    <button class="mob-nav-btn" id="mobFav" onclick="showToast('❤️ Seus favoritos estão vazios', false)">
+      <i class="far fa-heart"></i>
+      <span>Favoritos</span>
+    </button>
+    <button class="mob-nav-btn" id="mobCart" onclick="showToast('🛒 ' + cartCount + ' item(s) no carrinho', false)">
+      <i class="fas fa-shopping-cart"></i>
+      <span>Carrinho</span>
+      <span class="mob-badge" id="mobCartBadge">0</span>
+    </button>
+  </div>
+</nav>
 
 <!-- ========== HOME VIEW ========== -->
 <div class="view active" id="view-home">
@@ -588,7 +755,10 @@ footer { background: var(--purple-dark); color: white; margin-top: 0; }
 <div class="view" id="view-cat">
   <div class="cat-layout">
     <!-- Filtros -->
-    <div class="filter-panel">
+    <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleFilter()">
+      <i class="fas fa-sliders-h"></i> Filtros
+    </button>
+    <div class="filter-panel" id="filterPanel">
       <div class="filter-title"><i class="fas fa-sliders-h" style="color:var(--purple)"></i> Filtros</div>
 
       <div class="filter-sec">
@@ -1024,6 +1194,26 @@ function showView(name) {
   const v = document.getElementById('view-' + name);
   if (v) v.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Update mobile bottom nav active state
+  const navMap = { home: 'mobHome', cat: 'mobCat', product: null };
+  document.querySelectorAll('.mob-nav-btn').forEach(b => b.classList.remove('active'));
+  const activeId = navMap[name];
+  if (activeId) document.getElementById(activeId)?.classList.add('active');
+}
+
+function focusSearch() {
+  const inp = document.getElementById('searchInput');
+  inp.focus();
+  inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function toggleFilter() {
+  const panel = document.getElementById('filterPanel');
+  const btn = document.getElementById('filterToggleBtn');
+  const open = panel.classList.toggle('open');
+  btn.innerHTML = open
+    ? '<i class="fas fa-times"></i> Fechar filtros'
+    : '<i class="fas fa-sliders-h"></i> Filtros';
 }
 
 function goHome() { showView('home'); }
@@ -1375,12 +1565,14 @@ function doSearch(e) {
 function addToCart() {
   cartCount++;
   document.getElementById('cartBadge').textContent = cartCount;
+  document.getElementById('mobCartBadge').textContent = cartCount;
   showToast('✅ Produto adicionado ao carrinho!', true);
 }
 
 function quickAdd(id) {
   cartCount++;
   document.getElementById('cartBadge').textContent = cartCount;
+  document.getElementById('mobCartBadge').textContent = cartCount;
   showToast('✅ Produto adicionado ao carrinho!', true);
 }
 
