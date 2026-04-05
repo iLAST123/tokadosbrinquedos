@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toka dos Brinquedos - Quanto mais brincadeira, melhor!</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --purple: #4A2483;
+  --purple-dark: #3A1A6E;
+  --orange: #FF6B00;
+  --green: #00A651;
+  --cream: #FFF5E6;
+  --yellow: #FFD700;
+}
+body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--cream); color: #333; }
+a { text-decoration: none; }
+
+/* ===== ANNOUNCEMENT ===== */
+.announce { background: var(--orange); color: white; text-align: center; padding: 8px; font-size: 13px; font-weight: 500; }
+
+/* ===== HEADER ===== */
+header { background: var(--purple); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 12px rgba(0,0,0,0.35); }
+.header-top { display: flex; align-items: center; padding: 10px 30px; gap: 16px; }
+
+.logo { display: flex; align-items: center; gap: 10px; cursor: pointer; flex-shrink: 0; }
+.logo-icon { width: 48px; height: 48px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+.logo-text { color: white; font-size: 20px; font-weight: 900; line-height: 1.1; }
+.logo-text em { color: var(--yellow); font-style: normal; }
+.logo-sub { color: rgba(255,255,255,0.65); font-size: 10px; display: block; font-weight: 400; }
+
+.search-wrap { flex: 1; max-width: 580px; }
+.search-form { display: flex; border-radius: 26px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+.search-form input { flex: 1; padding: 11px 20px; border: none; font-size: 14px; outline: none; }
+.search-form button { background: var(--orange); color: white; border: none; padding: 11px 22px; cursor: pointer; font-size: 17px; transition: background .2s; }
+.search-form button:hover { background: #E05A00; }
+
+.hdr-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+.hdr-btn { background: none; border: none; color: white; cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 6px 11px; font-size: 11px; gap: 2px; border-radius: 8px; transition: background .2s; }
+.hdr-btn:hover { background: rgba(255,255,255,0.12); }
+.hdr-btn i { font-size: 21px; }
+.cart-wrap { position: relative; }
+.cart-badge { position: absolute; top: 3px; right: 7px; background: var(--orange); color: white; border-radius: 50%; width: 17px; height: 17px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; pointer-events: none; }
+
+/* NAV */
+nav { background: var(--purple-dark); }
+.nav-list { display: flex; align-items: center; padding: 0 30px; overflow-x: auto; scrollbar-width: none; }
+.nav-list::-webkit-scrollbar { display: none; }
+.nav-list a { color: rgba(255,255,255,0.88); padding: 11px 13px; font-size: 13px; white-space: nowrap; display: block; transition: background .2s; cursor: pointer; }
+.nav-list a:hover { background: rgba(255,255,255,0.1); color: white; }
+.nav-ofertas { background: var(--yellow) !important; color: #333 !important; border-radius: 20px; margin: 6px 0; padding: 5px 14px !important; font-weight: bold; }
+.nav-ofertas:hover { background: #FFC200 !important; }
+.nav-sep { width: 1px; height: 18px; background: rgba(255,255,255,0.18); flex-shrink: 0; margin: 0 4px; }
+
+/* ===== VIEWS ===== */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ===== HOME ===== */
+
+/* HERO */
+.hero-section { background: #FFF0E0; padding: 16px 30px; }
+.hero-grid { display: grid; grid-template-columns: 1fr 380px; gap: 14px; }
+
+.hero-main { border-radius: 16px; overflow: hidden; height: 340px; position: relative; }
+.hero-slides-wrap { width: 100%; height: 100%; overflow: hidden; }
+.hero-slides { display: flex; height: 100%; transition: transform .5s ease; }
+.hero-slide { min-width: 100%; height: 100%; display: flex; align-items: center; position: relative; padding: 40px; }
+.hero-slide h2 { font-size: 40px; font-weight: 900; color: white; text-shadow: 2px 2px 6px rgba(0,0,0,0.3); line-height: 1.1; margin-bottom: 10px; }
+.hero-slide p { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 18px; }
+.hero-cta { display: inline-block; background: white; color: var(--purple); padding: 11px 26px; border-radius: 25px; font-weight: bold; font-size: 14px; cursor: pointer; border: none; transition: transform .2s; }
+.hero-cta:hover { transform: scale(1.04); }
+.hero-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+.hero-dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; cursor: pointer; transition: background .2s; }
+.hero-dot.active { background: white; }
+
+.hero-side { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.hero-mini { border-radius: 12px; height: 163px; cursor: pointer; transition: transform .2s; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px; position: relative; overflow: hidden; }
+.hero-mini:hover { transform: scale(1.03); }
+.hero-mini h4 { color: white; font-size: 14px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); margin-bottom: 5px; }
+.mini-badge { background: var(--orange); color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; display: inline-block; }
+
+/* PROMO STRIP */
+.promo-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 16px 30px; }
+.promo-item { background: white; border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; border: 1px solid #f0e8d8; transition: box-shadow .2s; cursor: default; }
+.promo-item:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.09); }
+.promo-item i { font-size: 28px; flex-shrink: 0; }
+.promo-item h4 { font-size: 13px; font-weight: bold; color: #333; }
+.promo-item p { font-size: 11px; color: #777; margin-top: 2px; }
+
+/* SECTION */
+.section { padding: 24px 30px; }
+.sec-title { font-size: 19px; font-weight: bold; color: #333; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.sec-title .label { display: flex; align-items: center; gap: 8px; }
+.sec-title a { font-size: 13px; color: var(--purple); font-weight: normal; cursor: pointer; }
+.sec-title a:hover { text-decoration: underline; }
+
+/* AGE PILLS */
+.age-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+.age-pill { padding: 11px 24px; border-radius: 30px; font-weight: bold; font-size: 14px; cursor: pointer; border: none; transition: all .2s; }
+.age-pill:hover { filter: brightness(.92); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+/* BRANDS */
+.brands-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.brand-card { background: white; border-radius: 12px; padding: 18px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all .2s; border: 1px solid #eee; }
+.brand-card:hover { box-shadow: 0 4px 18px rgba(74,36,131,.12); transform: translateY(-3px); }
+.brand-info h3 { font-size: 20px; font-weight: 900; }
+.brand-info p { font-size: 11px; color: #666; margin-top: 2px; }
+.brand-off { font-size: 13px; font-weight: bold; color: var(--purple); margin-top: 3px; }
+.brand-icon { font-size: 36px; }
+
+/* PRODUCT CAROUSEL */
+.prod-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 10px; }
+.prod-scroll::-webkit-scrollbar { height: 4px; }
+.prod-scroll::-webkit-scrollbar-thumb { background: #d8c8f0; border-radius: 2px; }
+
+/* PRODUCT CARD */
+.pcard { min-width: 210px; background: white; border-radius: 14px; overflow: hidden; cursor: pointer; transition: all .2s; border: 1px solid #eee; flex-shrink: 0; position: relative; }
+.pcard:hover { box-shadow: 0 6px 24px rgba(74,36,131,.16); transform: translateY(-4px); }
+.pcard-img { width: 100%; height: 175px; object-fit: cover; display: block; background: #f0e8f8; }
+.pcard-disc { position: absolute; top: 8px; left: 8px; background: #E53935; color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 20px; }
+.pcard-wish { position: absolute; top: 8px; right: 8px; background: white; border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: #ccc; box-shadow: 0 1px 4px rgba(0,0,0,.15); transition: color .2s; }
+.pcard-wish:hover, .pcard-wish.on { color: #E53935; }
+.pcard-body { padding: 12px; }
+.pcard-stars { color: #FF6B00; font-size: 12px; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+.pcard-stars span { color: #888; font-size: 11px; }
+.pcard-name { font-size: 13px; line-height: 1.4; height: 37px; overflow: hidden; margin-bottom: 7px; color: #333; }
+.pcard-old { font-size: 11px; color: #bbb; text-decoration: line-through; }
+.pcard-price { font-size: 21px; font-weight: bold; color: #222; }
+.pcard-inst { font-size: 11px; color: #666; margin-top: 1px; margin-bottom: 9px; }
+.btn-add { width: 100%; background: var(--green); color: white; border: none; padding: 9px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background .2s; }
+.btn-add:hover { background: #008C44; }
+.pcard-new { position: absolute; top: 8px; left: 8px; background: var(--purple); color: white; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 20px; }
+
+/* CAT ICONS */
+.cat-icons { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: none; }
+.cat-icon { display: flex; flex-direction: column; align-items: center; gap: 7px; cursor: pointer; min-width: 82px; }
+.cat-icon-circle { width: 76px; height: 76px; border-radius: 50%; background: white; border: 2px solid #eee; display: flex; align-items: center; justify-content: center; font-size: 30px; transition: all .2s; }
+.cat-icon:hover .cat-icon-circle { border-color: var(--purple); background: #f0e8ff; transform: scale(1.08); }
+.cat-icon span { font-size: 11px; font-weight: 600; color: #444; text-align: center; }
+
+/* WHITE SECTION */
+.section-white { background: white; margin: 0; }
+
+/* ===== PRODUCT DETAIL ===== */
+.pd-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 30px; }
+.breadcrumb { font-size: 12px; color: #999; margin-bottom: 20px; display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.breadcrumb a { color: var(--purple); cursor: pointer; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb i { font-size: 9px; color: #ccc; }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; color: var(--purple); background: none; border: none; font-size: 14px; cursor: pointer; margin-bottom: 16px; padding: 0; }
+.back-btn:hover { text-decoration: underline; }
+
+.pd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; }
+
+/* Images */
+.pd-images { position: sticky; top: 108px; }
+.pd-main { width: 100%; height: 420px; background: #f5f0fa; border-radius: 16px; overflow: hidden; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
+.pd-main img { width: 100%; height: 100%; object-fit: cover; }
+.pd-thumbs { display: flex; gap: 8px; }
+.pd-thumb { width: 72px; height: 72px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2.5px solid transparent; transition: border-color .2s; flex-shrink: 0; }
+.pd-thumb.active { border-color: var(--purple); }
+.pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Info */
+.pd-brand-tag { background: #ede0ff; color: var(--purple); font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+.pd-title { font-size: 22px; font-weight: bold; color: #222; line-height: 1.3; margin-bottom: 10px; }
+.pd-rating-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 13px; }
+.pd-rating-row .stars { color: #FF6B00; }
+.pd-rating-row .count { color: #888; }
+.pd-code { font-size: 12px; color: #bbb; margin-bottom: 18px; }
+
+.price-box { background: #f8f5ff; border-radius: 14px; padding: 20px; margin-bottom: 18px; }
+.price-old-row { font-size: 13px; color: #bbb; text-decoration: line-through; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.disc-tag { background: #E53935; color: white; font-size: 11px; font-weight: bold; padding: 2px 7px; border-radius: 4px; text-decoration: none; }
+.price-main { font-size: 38px; font-weight: 900; color: #222; }
+.price-inst { font-size: 14px; color: #555; margin-top: 3px; }
+.price-pix { display: inline-flex; align-items: center; gap: 7px; background: #e8f5e9; color: #2e7d32; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: bold; margin-top: 12px; }
+
+.pd-btns { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.btn-buy-now { background: var(--purple); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background .2s; }
+.btn-buy-now:hover { background: var(--purple-dark); }
+.btn-cart-big { background: var(--green); color: white; border: none; padding: 15px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background .2s; }
+.btn-cart-big:hover { background: #008C44; }
+
+/* FREIGHT */
+.freight-box { border: 1.5px solid #e0d8f0; border-radius: 14px; padding: 18px; margin-bottom: 20px; }
+.freight-box h3 { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.freight-row { display: flex; gap: 8px; }
+.freight-row input { flex: 1; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: border-color .2s; }
+.freight-row input:focus { border-color: var(--purple); }
+.freight-row button { background: var(--purple); color: white; border: none; padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background .2s; }
+.freight-row button:hover { background: var(--purple-dark); }
+.freight-link { font-size: 12px; color: var(--purple); display: inline-block; margin-top: 6px; cursor: pointer; }
+.freight-link:hover { text-decoration: underline; }
+.freight-results { margin-top: 14px; }
+.freight-opt { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+.freight-opt:last-child { border-bottom: none; }
+.fo-name { font-size: 14px; font-weight: bold; color: #333; }
+.fo-days { font-size: 12px; color: #888; margin-top: 2px; }
+.fo-price { font-size: 15px; font-weight: bold; color: var(--purple); }
+.fo-free { color: var(--green) !important; }
+
+/* TABS */
+.pd-tabs { margin-top: 22px; }
+.tab-nav { display: flex; border-bottom: 2px solid #eee; }
+.tab-nav button { padding: 11px 18px; background: none; border: none; font-size: 14px; color: #888; cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -2px; transition: all .2s; }
+.tab-nav button.active { color: var(--purple); border-bottom-color: var(--purple); font-weight: bold; }
+.tab-panel { padding: 18px 0; display: none; }
+.tab-panel.active { display: block; }
+.tab-panel p { font-size: 14px; color: #555; line-height: 1.75; }
+.spec-tbl { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
+.spec-tbl tr:nth-child(even) { background: #faf6ff; }
+.spec-tbl td { padding: 9px 14px; border: 1px solid #eee; }
+.spec-tbl td:first-child { font-weight: bold; color: #555; width: 38%; }
+.review-block { border-bottom: 1px solid #f0f0f0; padding: 14px 0; }
+.review-block:last-child { border-bottom: none; }
+.review-name { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.review-text { font-size: 13px; color: #555; }
+
+/* RELATED */
+.related-sec { padding: 28px 0 0; }
+.related-sec .sec-title { font-size: 18px; }
+
+/* ===== CATEGORY VIEW ===== */
+.cat-layout { display: grid; grid-template-columns: 230px 1fr; gap: 20px; padding: 20px 30px 40px; }
+.filter-panel { background: white; border-radius: 14px; padding: 20px; border: 1px solid #eee; height: fit-content; position: sticky; top: 108px; }
+.filter-title { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.filter-sec { margin-bottom: 22px; }
+.filter-sec h4 { font-size: 12px; font-weight: bold; color: #777; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #f0f0f0; }
+.filter-opt { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; color: #555; cursor: pointer; }
+.filter-opt input { accent-color: var(--purple); cursor: pointer; }
+.filter-opt label { cursor: pointer; }
+.price-range { display: flex; gap: 8px; margin-bottom: 8px; }
+.price-range input { flex: 1; padding: 7px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 12px; outline: none; }
+.btn-filter { width: 100%; background: var(--purple); color: white; border: none; padding: 9px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; }
+
+.results-area { }
+.results-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+.results-hdr h2 { font-size: 20px; font-weight: bold; }
+.results-hdr p { font-size: 13px; color: #888; }
+.results-sort { padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; cursor: pointer; color: #333; }
+.results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.no-results { text-align: center; padding: 60px 20px; color: #888; }
+.no-results i { font-size: 48px; color: #ddd; margin-bottom: 14px; display: block; }
+
+/* ===== FOOTER ===== */
+footer { background: var(--purple-dark); color: white; margin-top: 0; }
+.footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 30px; padding: 40px 30px 30px; }
+.footer-logo-text { font-size: 24px; font-weight: 900; margin-bottom: 10px; }
+.footer-logo-text em { color: var(--yellow); font-style: normal; }
+.footer-desc { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.6; }
+.footer-social { display: flex; gap: 12px; margin-top: 16px; }
+.footer-social a { color: rgba(255,255,255,.75); font-size: 22px; transition: color .2s; }
+.footer-social a:hover { color: white; }
+.footer-col h4 { font-size: 14px; font-weight: bold; margin-bottom: 14px; opacity: .9; }
+.footer-col a { display: block; color: rgba(255,255,255,.6); font-size: 13px; margin-bottom: 7px; transition: color .2s; }
+.footer-col a:hover { color: white; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,.15); padding: 20px 30px; }
+.pay-label { font-size: 13px; color: rgba(255,255,255,.7); margin-bottom: 10px; }
+.pay-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.pay-badge { background: white; color: #333; border-radius: 6px; padding: 5px 13px; font-size: 12px; font-weight: bold; }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,.45); }
+
+/* ===== TOAST ===== */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #222; color: white; padding: 14px 20px; border-radius: 12px; font-size: 14px; display: flex; align-items: center; gap: 10px; z-index: 9999; transform: translateY(120px); transition: transform .3s ease; max-width: 320px; box-shadow: 0 4px 20px rgba(0,0,0,.25); pointer-events: none; }
+.toast.show { transform: translateY(0); }
+.toast.ok { background: var(--green); }
+
+/* ===== UTILS ===== */
+.hidden { display: none !important; }
+.mt0 { margin-top: 0 !important; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1000px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-side { display: none; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .cat-layout { grid-template-columns: 1fr; }
+  .filter-panel { position: static; }
+}
+@media (max-width: 720px) {
+  .header-top { padding: 10px 16px; gap: 10px; }
+  .logo-text { font-size: 16px; }
+  .logo-sub { display: none; }
+  .hdr-btn span { display: none; }
+  .hdr-btn { padding: 6px 8px; }
+  .hdr-btn i { font-size: 22px; }
+  .nav-list { padding: 0 16px; }
+  .hero-section { padding: 12px 16px; }
+  .promo-strip { padding: 12px 16px; grid-template-columns: 1fr 1fr; }
+  .section { padding: 18px 16px; }
+  .brands-grid { grid-template-columns: 1fr 1fr; }
+  .pd-grid { grid-template-columns: 1fr; }
+  .pd-wrap { padding: 16px; }
+  .pd-images { position: static; }
+  .cat-layout { padding: 14px 16px 30px; }
+  .footer-top { padding: 24px 16px; grid-template-columns: 1fr; }
+  .footer-bottom { padding: 16px; }
+  .results-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .age-pills { gap: 8px; }
+  .age-pill { padding: 9px 16px; font-size: 13px; }
+  .promo-item { padding: 12px; }
+  .promo-item p { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT -->
+<div class="announce">🚚 Frete grátis acima de R$ 199 &nbsp;|&nbsp; 📦 Retire na loja em até 90 minutos &nbsp;|&nbsp; 💳 PIX com 10% de desconto</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="logo" onclick="goHome()">
+      <div class="logo-icon">🧸</div>
+      <div class="logo-text">
+        Toka dos <em>Brinquedos</em>
+        <span class="logo-sub">Quanto mais brincadeira, melhor!</span>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <form class="search-form" onsubmit="doSearch(event)">
+        <input type="text" id="searchInput" placeholder="Pesquise por produtos, marcas ou categorias...">
+        <button type="submit"><i class="fas fa-search"></i></button>
+      </form>
+    </div>
+    <div class="hdr-actions">
+      <button class="hdr-btn" title="Minha Loja"><i class="fas fa-map-marker-alt"></i><span>Minha Loja</span></button>
+      <button class="hdr-btn" title="Favoritos" onclick="showToast('❤️ Seus favoritos estão vazios', false)"><i class="far fa-heart"></i><span>Favoritos</span></button>
+      <button class="hdr-btn" title="Entrar"><i class="far fa-user"></i><span>Entrar</span></button>
+      <div class="cart-wrap">
+        <button class="hdr-btn" title="Carrinho" onclick="showToast('🛒 ' + cartCount + ' item(s) no carrinho', false)"><i class="fas fa-shopping-cart"></i><span>Carrinho</span></button>
+        <div class="cart-badge" id="cartBadge">0</div>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-list">
+      <a onclick="goHome()"><i class="fas fa-bars"></i> Todos os departamentos</a>
+      <div class="nav-sep"></div>
+      <a onclick="showAge('3-5')">Presente por Idade</a>
+      <a onclick="showCat('bonecas')">Bonecas</a>
+      <a onclick="showCat('action')">Ação e Aventura</a>
+      <a onclick="showCat('jogos')">Jogos</a>
+      <a onclick="showCat('veiculos')">Veículos</a>
+      <a onclick="showCat('bebe')">Bebê</a>
+      <a onclick="showCat('tecnologia')">Tecnologia</a>
+      <a onclick="showCat('geeks')">Geeks</a>
+      <a onclick="showCat('esportes')">Esportes</a>
+      <a onclick="showCat('importados')">Importados</a>
+      <a onclick="showCat('todos')" class="nav-ofertas">🏷️ OFERTAS</a>
+    </div>
+  </nav>
+</header>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ========== HOME VIEW ========== -->
+<div class="view active" id="view-home">
+
+  <!-- HERO -->
+  <div class="hero-section">
+    <div class="hero-grid">
+      <div class="hero-main">
+        <div class="hero-slides-wrap">
+          <div class="hero-slides" id="heroSlides">
+            <div class="hero-slide" style="background: linear-gradient(135deg,#4A2483 0%,#7C3AED 100%)">
+              <div>
+                <h2>Semana dos<br>Brinquedos! 🎉</h2>
+                <p>Até 60% OFF nos melhores brinquedos</p>
+                <button class="hero-cta" onclick="showCat('todos')">Aproveitar agora</button>
+              </div>
+            </div>
+            <div class="hero-slide" style="background: linear-gradient(135deg,#E91E8C 0%,#FF6B6B 100%)">
+              <div>
+                <h2>Barbie Dream<br>Days ✨</h2>
+                <p>Coleção completa com até 40% OFF</p>
+                <button class="hero-cta" onclick="showCat('bonecas')">Ver coleção</button>
+              </div>
+            </div>
+            <div class="hero-slide" style="background: linear-gradient(135deg,#1A7A4A 0%,#2ECC71 100%)">
+              <div>
+                <h2>LEGO para<br>toda família 🧱</h2>
+                <p>Kits exclusivos a partir de R$ 49,99</p>
+                <button class="hero-cta" onclick="showCat('jogos')">Montar agora</button>
+              </div>
+            </div>
+            <div class="hero-slide" style="background: linear-gradient(135deg,#FF6B00 0%,#FFB300 100%)">
+              <div>
+                <h2>Hot Wheels<br>Pré-Venda! 🏎️</h2>
+                <p>Novidades chegando com frete grátis</p>
+                <button class="hero-cta" onclick="showCat('veiculos')">Ver novidades</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-dots" id="heroDots">
+          <div class="hero-dot active" onclick="goSlide(0)"></div>
+          <div class="hero-dot" onclick="goSlide(1)"></div>
+          <div class="hero-dot" onclick="goSlide(2)"></div>
+          <div class="hero-dot" onclick="goSlide(3)"></div>
+        </div>
+      </div>
+      <div class="hero-side">
+        <div class="hero-mini" style="background:linear-gradient(135deg,#e91e8c,#ff6b6b)" onclick="showCat('action')">
+          <h4>Super-Heróis 🦸</h4><span class="mini-badge">até 55% OFF</span>
+        </div>
+        <div class="hero-mini" style="background:linear-gradient(135deg,#1565C0,#7C4DFF)" onclick="showCat('jogos')">
+          <h4>Jogos de Tabuleiro 🎲</h4><span class="mini-badge">a partir R$ 39</span>
+        </div>
+        <div class="hero-mini" style="background:linear-gradient(135deg,#00897B,#26C6DA)" onclick="showCat('bebe')">
+          <h4>Mundo Bebê 👶</h4><span class="mini-badge">até 44% OFF</span>
+        </div>
+        <div class="hero-mini" style="background:linear-gradient(135deg,#F57F17,#FFCA28)" onclick="showCat('veiculos')">
+          <h4>Hot Wheels 🚗</h4><span class="mini-badge">Pré-venda!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMO STRIP -->
+  <div class="promo-strip">
+    <div class="promo-item"><i class="fas fa-bolt" style="color:var(--orange)"></i><div><h4>Entrega em até 3h</h4><p>Para capitais selecionadas</p></div></div>
+    <div class="promo-item"><i class="fas fa-store" style="color:var(--purple)"></i><div><h4>Retire na loja</h4><p>Em até 90 minutos</p></div></div>
+    <div class="promo-item"><i class="fas fa-shield-alt" style="color:var(--green)"></i><div><h4>Compra 100% segura</h4><p>Certificado SSL</p></div></div>
+    <div class="promo-item"><i class="fas fa-exchange-alt" style="color:var(--orange)"></i><div><h4>Troca fácil</h4><p>Até 30 dias sem custo</p></div></div>
+  </div>
+
+  <!-- PRESENTE POR IDADE -->
+  <div class="section">
+    <div class="sec-title">
+      <div class="label">🎁 Presente por Idade</div>
+      <a onclick="showAge('3-5')">ver todas</a>
+    </div>
+    <div class="age-pills">
+      <button class="age-pill" style="background:#B2EBF2;color:#006064" onclick="showAge('ate-1')">Até 1 ano</button>
+      <button class="age-pill" style="background:#BBDEFB;color:#0D47A1" onclick="showAge('1-2')">1 a 2 anos</button>
+      <button class="age-pill" style="background:#C8E6C9;color:#1B5E20" onclick="showAge('3-5')">3 a 5 anos</button>
+      <button class="age-pill" style="background:#FFF9C4;color:#F57F17" onclick="showAge('6-8')">6 a 8 anos</button>
+      <button class="age-pill" style="background:#F8BBD9;color:#880E4F" onclick="showAge('9+')">+9 anos</button>
+    </div>
+  </div>
+
+  <!-- MARCAS FAVORITAS -->
+  <div class="section mt0">
+    <div class="sec-title">
+      <div class="label">❤️ Marcas Favoritas</div>
+      <a onclick="showCat('todos')">ver todas</a>
+    </div>
+    <div class="brands-grid">
+      <div class="brand-card" onclick="showBrand('LEGO')"><div class="brand-info"><h3 style="color:#E3000B">LEGO</h3><p>Brincando de construir</p><div class="brand-off">até 50% OFF</div></div><div class="brand-icon">🧱</div></div>
+      <div class="brand-card" onclick="showBrand('Mattel')"><div class="brand-info"><h3 style="color:#E91E8C">Barbie</h3><p>Dream Days</p><div class="brand-off">até 40% OFF</div></div><div class="brand-icon">💗</div></div>
+      <div class="brand-card" onclick="showBrand('Mattel')"><div class="brand-info"><h3 style="color:#FF6B00">Hot Wheels</h3><p>Para acelerar!</p><div class="brand-off">a partir R$ 12</div></div><div class="brand-icon">🏎️</div></div>
+      <div class="brand-card" onclick="showBrand('Hasbro')"><div class="brand-info"><h3 style="color:#E91E8C">Baby Alive</h3><p>As bonecas favoritas</p><div class="brand-off">até 30% OFF</div></div><div class="brand-icon">👶</div></div>
+      <div class="brand-card" onclick="showBrand('Pokémon')"><div class="brand-info"><h3 style="color:#1565C0">Pokémon</h3><p>Aumente a coleção</p><div class="brand-off">até 44% OFF</div></div><div class="brand-icon">⚡</div></div>
+      <div class="brand-card" onclick="showBrand('Hasbro')"><div class="brand-info"><h3 style="color:#1A237E">Marvel</h3><p>Super-Heróis</p><div class="brand-off">até 55% OFF</div></div><div class="brand-icon">🦸</div></div>
+      <div class="brand-card" onclick="showBrand('Fisher-Price')"><div class="brand-info"><h3 style="color:#0D47A1">Fisher-Price</h3><p>Primeiros brinquedos</p><div class="brand-off">até 35% OFF</div></div><div class="brand-icon">🌟</div></div>
+      <div class="brand-card" onclick="showBrand('Funko')"><div class="brand-info"><h3 style="color:#0D47A1">Disney</h3><p>Personagens favoritos</p><div class="brand-off">até 70% OFF</div></div><div class="brand-icon">🏰</div></div>
+    </div>
+  </div>
+
+  <!-- MAIS VENDIDOS -->
+  <div class="section mt0">
+    <div class="sec-title">
+      <div class="label">🔥 Mais Vendidos</div>
+      <a onclick="showCat('todos')">ver todos</a>
+    </div>
+    <div class="prod-scroll" id="carousel-top"></div>
+  </div>
+
+  <!-- NOVIDADES (white bg) -->
+  <div class="section section-white mt0">
+    <div class="sec-title">
+      <div class="label">✨ Novidades</div>
+      <a onclick="showCat('novidades')">ver todas</a>
+    </div>
+    <div class="prod-scroll" id="carousel-new"></div>
+  </div>
+
+  <!-- NAVEGUE POR CATEGORIA -->
+  <div class="section mt0">
+    <div class="sec-title"><div class="label">🗂️ Navegue por Categoria</div></div>
+    <div class="cat-icons">
+      <div class="cat-icon" onclick="showCat('brinquedos')"><div class="cat-icon-circle">🧸</div><span>Brinquedos</span></div>
+      <div class="cat-icon" onclick="showCat('bebe')"><div class="cat-icon-circle">👶</div><span>Bebê</span></div>
+      <div class="cat-icon" onclick="showCat('jogos')"><div class="cat-icon-circle">🎲</div><span>Jogos</span></div>
+      <div class="cat-icon" onclick="showCat('esportes')"><div class="cat-icon-circle">⚽</div><span>Esportes</span></div>
+      <div class="cat-icon" onclick="showCat('geeks')"><div class="cat-icon-circle">🎮</div><span>Geeks</span></div>
+      <div class="cat-icon" onclick="showCat('tecnologia')"><div class="cat-icon-circle">🤖</div><span>Tecnologia</span></div>
+      <div class="cat-icon" onclick="showCat('bonecas')"><div class="cat-icon-circle">🪆</div><span>Bonecas</span></div>
+      <div class="cat-icon" onclick="showCat('fantasias')"><div class="cat-icon-circle">🎭</div><span>Fantasias</span></div>
+      <div class="cat-icon" onclick="showCat('veiculos')"><div class="cat-icon-circle">🚗</div><span>Veículos</span></div>
+      <div class="cat-icon" onclick="showCat('importados')"><div class="cat-icon-circle">✈️</div><span>Importados</span></div>
+      <div class="cat-icon" onclick="showCat('quebra')"><div class="cat-icon-circle">🧩</div><span>Quebra-cabeça</span></div>
+      <div class="cat-icon" onclick="showCat('action')"><div class="cat-icon-circle">🦸</div><span>Ação</span></div>
+    </div>
+  </div>
+
+  <!-- OFERTAS IMPERDÍVEIS -->
+  <div class="section mt0">
+    <div class="sec-title">
+      <div class="label">⚡ Ofertas Imperdíveis</div>
+      <a onclick="showCat('ofertas')">ver todas</a>
+    </div>
+    <div class="prod-scroll" id="carousel-offers"></div>
+  </div>
+
+</div><!-- /home -->
+
+<!-- ========== PRODUCT VIEW ========== -->
+<div class="view" id="view-product">
+  <div class="pd-wrap">
+    <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Voltar</button>
+    <div class="breadcrumb" id="pdBreadcrumb"></div>
+
+    <div class="pd-grid">
+      <!-- Imagens -->
+      <div class="pd-images">
+        <div class="pd-main"><img id="pdMainImg" src="" alt=""></div>
+        <div class="pd-thumbs" id="pdThumbs"></div>
+      </div>
+
+      <!-- Informações -->
+      <div>
+        <div class="pd-brand-tag" id="pdBrand"></div>
+        <h1 class="pd-title" id="pdTitle"></h1>
+        <div class="pd-rating-row">
+          <span class="stars" id="pdStars"></span>
+          <span class="count" id="pdReviews"></span>
+        </div>
+        <div class="pd-code" id="pdCode"></div>
+
+        <div class="price-box">
+          <div class="price-old-row" id="pdOldPrice"></div>
+          <div class="price-main" id="pdPrice"></div>
+          <div class="price-inst" id="pdInst"></div>
+          <div class="price-pix" id="pdPix"><i class="fas fa-qrcode"></i><span id="pdPixVal"></span></div>
+        </div>
+
+        <div class="pd-btns">
+          <button class="btn-buy-now" onclick="handleBuy()">Comprar agora</button>
+          <button class="btn-cart-big" onclick="addToCart()"><i class="fas fa-shopping-cart"></i> Adicionar ao carrinho</button>
+        </div>
+
+        <!-- CALCULADORA DE FRETE -->
+        <div class="freight-box">
+          <h3><i class="fas fa-truck" style="color:var(--purple)"></i> Calcular frete e prazo</h3>
+          <div class="freight-row">
+            <input type="text" id="cepInput" placeholder="Digite seu CEP (ex: 01310-100)" maxlength="9" oninput="maskCEP(this)">
+            <button onclick="calcFrete()">Calcular</button>
+          </div>
+          <a class="freight-link" href="https://buscacepinter.correios.com.br/" target="_blank">
+            <i class="fas fa-search"></i> Não sei meu CEP
+          </a>
+          <div class="freight-results hidden" id="freightResults"></div>
+        </div>
+
+        <!-- TABS -->
+        <div class="pd-tabs">
+          <div class="tab-nav">
+            <button class="active" onclick="openTab(this,'tab-desc')">Descrição</button>
+            <button onclick="openTab(this,'tab-spec')">Especificações</button>
+            <button onclick="openTab(this,'tab-rev')">Avaliações</button>
+          </div>
+          <div class="tab-panel active" id="tab-desc"></div>
+          <div class="tab-panel" id="tab-spec"></div>
+          <div class="tab-panel" id="tab-rev"></div>
+        </div>
+      </div>
+    </div><!-- /pd-grid -->
+
+    <!-- PRODUTOS RELACIONADOS -->
+    <div class="related-sec">
+      <div class="sec-title"><div class="label">🛍️ Você também pode gostar</div></div>
+      <div class="prod-scroll" id="carousel-related"></div>
+    </div>
+  </div>
+</div><!-- /product -->
+
+<!-- ========== CATEGORY / SEARCH VIEW ========== -->
+<div class="view" id="view-cat">
+  <div class="cat-layout">
+    <!-- Filtros -->
+    <div class="filter-panel">
+      <div class="filter-title"><i class="fas fa-sliders-h" style="color:var(--purple)"></i> Filtros</div>
+
+      <div class="filter-sec">
+        <h4>Faixa Etária</h4>
+        <label class="filter-opt"><input type="checkbox" value="ate-1" onchange="applyFilters()"> <label>Até 1 ano</label></label>
+        <label class="filter-opt"><input type="checkbox" value="1-2" onchange="applyFilters()"> <label>1 a 2 anos</label></label>
+        <label class="filter-opt"><input type="checkbox" value="3-5" onchange="applyFilters()"> <label>3 a 5 anos</label></label>
+        <label class="filter-opt"><input type="checkbox" value="6-8" onchange="applyFilters()"> <label>6 a 8 anos</label></label>
+        <label class="filter-opt"><input type="checkbox" value="9+" onchange="applyFilters()"> <label>+9 anos</label></label>
+      </div>
+
+      <div class="filter-sec">
+        <h4>Categoria</h4>
+        <label class="filter-opt"><input type="checkbox" value="bonecas" onchange="applyFilters()"> <label>Bonecas</label></label>
+        <label class="filter-opt"><input type="checkbox" value="action" onchange="applyFilters()"> <label>Ação e Aventura</label></label>
+        <label class="filter-opt"><input type="checkbox" value="jogos" onchange="applyFilters()"> <label>Jogos</label></label>
+        <label class="filter-opt"><input type="checkbox" value="veiculos" onchange="applyFilters()"> <label>Veículos</label></label>
+        <label class="filter-opt"><input type="checkbox" value="bebe" onchange="applyFilters()"> <label>Bebê</label></label>
+        <label class="filter-opt"><input type="checkbox" value="tecnologia" onchange="applyFilters()"> <label>Tecnologia</label></label>
+        <label class="filter-opt"><input type="checkbox" value="geeks" onchange="applyFilters()"> <label>Geeks</label></label>
+        <label class="filter-opt"><input type="checkbox" value="esportes" onchange="applyFilters()"> <label>Esportes</label></label>
+      </div>
+
+      <div class="filter-sec">
+        <h4>Faixa de Preço</h4>
+        <div class="price-range">
+          <input type="number" id="fMin" placeholder="R$ Min">
+          <input type="number" id="fMax" placeholder="R$ Máx">
+        </div>
+        <button class="btn-filter" onclick="applyFilters()">Aplicar preço</button>
+      </div>
+
+      <div class="filter-sec">
+        <h4>Marca</h4>
+        <label class="filter-opt"><input type="checkbox" value="Mattel" onchange="applyFilters()"> <label>Mattel / Barbie</label></label>
+        <label class="filter-opt"><input type="checkbox" value="LEGO" onchange="applyFilters()"> <label>LEGO</label></label>
+        <label class="filter-opt"><input type="checkbox" value="Hasbro" onchange="applyFilters()"> <label>Hasbro</label></label>
+        <label class="filter-opt"><input type="checkbox" value="Fisher-Price" onchange="applyFilters()"> <label>Fisher-Price</label></label>
+        <label class="filter-opt"><input type="checkbox" value="Pokémon" onchange="applyFilters()"> <label>Pokémon</label></label>
+        <label class="filter-opt"><input type="checkbox" value="Funko" onchange="applyFilters()"> <label>Funko</label></label>
+      </div>
+
+      <div class="filter-sec">
+        <h4>Avaliação</h4>
+        <label class="filter-opt"><input type="radio" name="fRating" value="5" onchange="applyFilters()"> <label>⭐⭐⭐⭐⭐ (5 estrelas)</label></label>
+        <label class="filter-opt"><input type="radio" name="fRating" value="4" onchange="applyFilters()"> <label>⭐⭐⭐⭐ ou mais</label></label>
+        <label class="filter-opt"><input type="radio" name="fRating" value="3" onchange="applyFilters()"> <label>⭐⭐⭐ ou mais</label></label>
+        <label class="filter-opt"><input type="radio" name="fRating" value="0" onchange="applyFilters()"> <label>Todas</label></label>
+      </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="results-area">
+      <div class="results-hdr">
+        <div>
+          <h2 id="catTitle">Todos os produtos</h2>
+          <p id="catCount"></p>
+        </div>
+        <select class="results-sort" onchange="sortGrid(this.value)">
+          <option value="relevance">Relevância</option>
+          <option value="price-asc">Menor preço</option>
+          <option value="price-desc">Maior preço</option>
+          <option value="rating">Melhor avaliados</option>
+          <option value="discount">Maior desconto</option>
+        </select>
+      </div>
+      <div class="results-grid" id="catGrid"></div>
+    </div>
+  </div>
+</div><!-- /cat -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo-text">🧸 Toka dos <em>Brinquedos</em></div>
+      <p class="footer-desc">A maior diversão do Brasil!<br>Quanto mais brincadeira, melhor!</p>
+      <div class="footer-social">
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="#" title="TikTok"><i class="fab fa-tiktok"></i></a>
+        <a href="#" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Institucional</h4>
+      <a href="#">Sobre a Toka</a>
+      <a href="#">Trabalhe conosco</a>
+      <a href="#">Nossas lojas</a>
+      <a href="#">Blog Toka</a>
+      <a href="#">Seja um parceiro</a>
+      <a href="#">Mapa do site</a>
+    </div>
+    <div class="footer-col">
+      <h4>Serviços</h4>
+      <a href="#">Central de atendimento</a>
+      <a href="#">Políticas de frete</a>
+      <a href="#">Trocas e devoluções</a>
+      <a href="#">Compre e retire</a>
+      <a href="#">Toka para empresas</a>
+      <a href="#">Cartão presente</a>
+    </div>
+    <div class="footer-col">
+      <h4>Atendimento</h4>
+      <a href="#">📞 0800 123 4567</a>
+      <a href="#">💬 Chat online</a>
+      <a href="#">📧 contato@toka.com.br</a>
+      <a href="#">Seg-Sex: 8h às 18h</a>
+      <a href="#">Políticas de privacidade</a>
+      <a href="#">Termos de uso</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="pay-label">Formas de pagamento aceitas</div>
+    <div class="pay-badges">
+      <div class="pay-badge">💳 Cartão de Crédito</div>
+      <div class="pay-badge">🏦 Débito</div>
+      <div class="pay-badge">📱 PIX</div>
+      <div class="pay-badge">💰 PIX Parcelado</div>
+      <div class="pay-badge">🎫 Boleto</div>
+    </div>
+    <div class="footer-copy">© 2025 Toka dos Brinquedos. Todos os direitos reservados. CNPJ: 12.345.678/0001-90</div>
+  </div>
+</footer>
+
+<script>
+// ===========================
+//        DADOS / PRODUTOS
+// ===========================
+const PRODUCTS = [
+  { id:1,  name:"Boneca Barbie Fashionista Ruiva", price:89.99,  old:129.99, rating:4.8, reviews:234, cat:"bonecas",    age:"3-5",  brand:"Mattel",       isNew:false,
+    img:"https://picsum.photos/seed/toka_bar01/400/400",
+    imgs:["https://picsum.photos/seed/toka_bar01/400/400","https://picsum.photos/seed/toka_bar02/400/400","https://picsum.photos/seed/toka_bar03/400/400"],
+    desc:"Boneca Barbie Fashionista com looks modernos e acessórios exclusivos. Estimula a criatividade e o jogo imaginativo. Inclui roupas, sapatos e acessórios incríveis. Indicado para +3 anos.",
+    tags:["boneca","barbie","meninas","fashion"] },
+
+  { id:2,  name:"LEGO City Quartel dos Bombeiros 500pç", price:349.99, old:449.99, rating:4.9, reviews:187, cat:"jogos",     age:"6-8",  brand:"LEGO",         isNew:true,
+    img:"https://picsum.photos/seed/toka_leg01/400/400",
+    imgs:["https://picsum.photos/seed/toka_leg01/400/400","https://picsum.photos/seed/toka_leg02/400/400"],
+    desc:"Conjunto LEGO City com quartel dos bombeiros detalhado com mais de 500 peças. Inclui figuras de bombeiros, caminhão de resgate e acessórios. Estimula o raciocínio lógico e a criatividade.",
+    tags:["lego","construção","meninos","city"] },
+
+  { id:3,  name:"Hot Wheels Pista Looping Radical", price:159.99, old:199.99, rating:4.7, reviews:312, cat:"veiculos",   age:"6-8",  brand:"Mattel",       isNew:false,
+    img:"https://picsum.photos/seed/toka_hw01/400/400",
+    imgs:["https://picsum.photos/seed/toka_hw01/400/400","https://picsum.photos/seed/toka_hw02/400/400"],
+    desc:"Pista Hot Wheels com looping duplo radical para aventuras sem fim! Inclui 1 carrinho exclusivo e suporta todos os carrinhos da linha Hot Wheels. Fácil de montar e desmontar.",
+    tags:["hot wheels","pista","carros","corrida"] },
+
+  { id:4,  name:"Baby Alive Chora de Verdade", price:219.99, old:279.99, rating:4.6, reviews:156, cat:"bonecas",    age:"3-5",  brand:"Hasbro",       isNew:false,
+    img:"https://picsum.photos/seed/toka_ba01/400/400",
+    imgs:["https://picsum.photos/seed/toka_ba01/400/400","https://picsum.photos/seed/toka_ba02/400/400"],
+    desc:"Baby Alive que chora lágrimas de verdade! Colocando a chupeta ela para de chorar. Acompanha fraldas, mamadeira, chupeta e 10 pacotes de comidinha. Bebê realista para cuidar.",
+    tags:["boneca","baby alive","meninas","bebê"] },
+
+  { id:5,  name:"Quebra-Cabeça 1000pç Floresta Mágica", price:69.99,  old:89.99,  rating:4.5, reviews:98,  cat:"quebra",     age:"9+",   brand:"Grow",         isNew:false,
+    img:"https://picsum.photos/seed/toka_puz01/400/400",
+    imgs:["https://picsum.photos/seed/toka_puz01/400/400"],
+    desc:"Quebra-cabeça 1000 peças com ilustração de floresta mágica encantada. Excelente para exercitar a memória, paciência e atenção. Embalagem com tampa ilustrada. Medidas montado: 68x47cm.",
+    tags:["quebra-cabeça","puzzle","família","adulto"] },
+
+  { id:6,  name:"Homem-Aranha Titan Hero 30cm com Som", price:129.99, old:169.99, rating:4.8, reviews:445, cat:"action",     age:"6-8",  brand:"Hasbro",       isNew:false,
+    img:"https://picsum.photos/seed/toka_sp01/400/400",
+    imgs:["https://picsum.photos/seed/toka_sp01/400/400","https://picsum.photos/seed/toka_sp02/400/400"],
+    desc:"Figura do Homem-Aranha Titan Hero Serie com 30cm de altura. Com sons e falas do personagem ativados por botão. Articulado em vários pontos. Compatível com acessórios Titan Hero.",
+    tags:["marvel","herói","meninos","homem-aranha"] },
+
+  { id:7,  name:"Jogo UNO Clássico 112 cartas", price:39.99,  old:54.99,  rating:4.9, reviews:687, cat:"jogos",     age:"6-8",  brand:"Mattel",       isNew:false,
+    img:"https://picsum.photos/seed/toka_uno01/400/400",
+    imgs:["https://picsum.photos/seed/toka_uno01/400/400"],
+    desc:"O clássico jogo de cartas UNO! Para 2 a 10 jogadores. Fácil de aprender, impossível de parar. 112 cartas com regras especiais. Diversão garantida para toda a família.",
+    tags:["jogo de cartas","família","clássico","UNO"] },
+
+  { id:8,  name:"Boneca LOL Surprise! Série 5", price:199.99, old:259.99, rating:4.7, reviews:321, cat:"bonecas",    age:"6-8",  brand:"MGA",          isNew:true,
+    img:"https://picsum.photos/seed/toka_lol01/400/400",
+    imgs:["https://picsum.photos/seed/toka_lol01/400/400","https://picsum.photos/seed/toka_lol02/400/400"],
+    desc:"LOL Surprise com mais de 15 surpresas para descobrir! Esfera com boneca, roupinha, sapatos, acessórios, garrafa e muito mais. Cada unidade é uma surpresa única.",
+    tags:["lol","boneca","surpresa","meninas"] },
+
+  { id:9,  name:"Paw Patrol Carro do Chase com Figura", price:119.99, old:149.99, rating:4.6, reviews:234, cat:"veiculos",   age:"3-5",  brand:"Spin Master",  isNew:false,
+    img:"https://picsum.photos/seed/toka_paw01/400/400",
+    imgs:["https://picsum.photos/seed/toka_paw01/400/400"],
+    desc:"Carro oficial do Chase da Patrulha Canina com a figura do personagem incluída. Funciona por impulso. Compatível com a pista Paw Patrol. Para crianças de 3 anos e acima.",
+    tags:["patrulha canina","carro","meninos","paw patrol"] },
+
+  { id:10, name:"Pokémon Deck Batalha Inicial 60 cartas", price:89.99,  old:109.99, rating:4.8, reviews:512, cat:"geeks",      age:"9+",   brand:"Pokémon",      isNew:false,
+    img:"https://picsum.photos/seed/toka_pkm01/400/400",
+    imgs:["https://picsum.photos/seed/toka_pkm01/400/400","https://picsum.photos/seed/toka_pkm02/400/400"],
+    desc:"Deck de batalha Pokémon perfeito para iniciantes. Inclui 60 cartas balanceadas, guia de regras em português, ficha de dano e contador de moedas. Aprenda a jogar TCG Pokémon.",
+    tags:["pokemon","cartas","geeks","colecionável"] },
+
+  { id:11, name:"Fisher-Price Girafa Musical Bebê", price:149.99, old:189.99, rating:4.7, reviews:178, cat:"bebe",      age:"ate-1",brand:"Fisher-Price",  isNew:false,
+    img:"https://picsum.photos/seed/toka_fp01/400/400",
+    imgs:["https://picsum.photos/seed/toka_fp01/400/400"],
+    desc:"Girafa musical Fisher-Price especial para bebês de 0 a 12 meses. Toca músicas suaves para estimular o desenvolvimento sensorial. Texturas variadas para explorar. Aprovada por pediatras.",
+    tags:["bebê","musical","fisher-price","desenvolvimento"] },
+
+  { id:12, name:"Drone Infantil com Câmera HD 720p", price:279.99, old:349.99, rating:4.5, reviews:89,  cat:"tecnologia",age:"9+",   brand:"Sky Kids",     isNew:true,
+    img:"https://picsum.photos/seed/toka_drn01/400/400",
+    imgs:["https://picsum.photos/seed/toka_drn01/400/400","https://picsum.photos/seed/toka_drn02/400/400"],
+    desc:"Drone infantil com câmera HD 720p integrada. Fácil de controlar com protetor de hélices. Bateria recarregável com até 20 minutos de voo. Alcance de 50 metros. Modo estabilizador automático.",
+    tags:["drone","tecnologia","meninos","câmera"] },
+
+  { id:13, name:"Fantasia Super-Heroína Infantil Tam. M", price:79.99,  old:99.99,  rating:4.4, reviews:156, cat:"fantasias",  age:"3-5",  brand:"Sulamericana", isNew:false,
+    img:"https://picsum.photos/seed/toka_fan01/400/400",
+    imgs:["https://picsum.photos/seed/toka_fan01/400/400"],
+    desc:"Fantasia de super-heroína para meninas. Tamanho M (4-6 anos). Inclui vestido com capa, tiaras e luva. Material poliéster resistente e confortável. Perfeita para festas e brincadeiras.",
+    tags:["fantasia","meninas","herói","festa"] },
+
+  { id:14, name:"Nerf Rival Zeus MXV-1200 12 projéteis", price:229.99, old:299.99, rating:4.6, reviews:267, cat:"action",     age:"9+",   brand:"Hasbro",       isNew:false,
+    img:"https://picsum.photos/seed/toka_nrf01/400/400",
+    imgs:["https://picsum.photos/seed/toka_nrf01/400/400","https://picsum.photos/seed/toka_nrf02/400/400"],
+    desc:"Nerf Rival Zeus com velocidade de impacto de 24m/s. Carregador integrado de 12 projéteis. Mecanismo de recarga rápida. Inclui 12 bolas Rival High-Impact. Para +14 anos.",
+    tags:["nerf","ação","meninos","tiro"] },
+
+  { id:15, name:"Kit Esportes Bola + Raquetes Praia", price:59.99,  old:79.99,  rating:4.3, reviews:134, cat:"esportes",   age:"6-8",  brand:"Mor",          isNew:false,
+    img:"https://picsum.photos/seed/toka_esp01/400/400",
+    imgs:["https://picsum.photos/seed/toka_esp01/400/400"],
+    desc:"Kit esportivo completo com bola de praia colorida e par de raquetes resistentes. Ideal para momentos de lazer em família na praia ou parque. Material resistente à água.",
+    tags:["esporte","praia","família","verão"] },
+
+  { id:16, name:"Funko Pop! Hermione Granger Harry Potter", price:119.99, old:149.99, rating:4.9, reviews:423, cat:"geeks",      age:"9+",   brand:"Funko",        isNew:true,
+    img:"https://picsum.photos/seed/toka_fnk01/400/400",
+    imgs:["https://picsum.photos/seed/toka_fnk01/400/400"],
+    desc:"Funko Pop! da Hermione Granger de Harry Potter, versão com varinha. Item colecionável edição especial. Altura: 9,5cm. Embalagem com janela para exposição. Licenciado oficialmente.",
+    tags:["funko","colecionável","geeks","harry potter"] },
+
+  { id:17, name:"Bicicleta Infantil Aro 16 Rosa com Cesta", price:399.99, old:499.99, rating:4.7, reviews:312, cat:"esportes",   age:"3-5",  brand:"Caloi",        isNew:false,
+    img:"https://picsum.photos/seed/toka_bic01/400/400",
+    imgs:["https://picsum.photos/seed/toka_bic01/400/400","https://picsum.photos/seed/toka_bic02/400/400"],
+    desc:"Bicicleta infantil aro 16 com rodinhas laterais removíveis. Com cesta frontal e adesivos decorativos incluídos. Para crianças de 4 a 6 anos. Freios seguros e guidão ajustável.",
+    tags:["bicicleta","esporte","meninas","pedalar"] },
+
+  { id:18, name:"Cubo Mágico Profissional 3x3 Speed", price:49.99,  old:69.99,  rating:4.8, reviews:567, cat:"quebra",     age:"9+",   brand:"MoYu",         isNew:false,
+    img:"https://picsum.photos/seed/toka_cub01/400/400",
+    imgs:["https://picsum.photos/seed/toka_cub01/400/400"],
+    desc:"Cubo Mágico profissional 3x3 de velocidade (speedcube). Giros suaves, precisos e silenciosos. Sistema anti-trava. Ideal para competições e praticantes intermediários e avançados.",
+    tags:["cubo mágico","puzzle","desafio","raciocínio"] },
+
+  { id:19, name:"Boneca Elsa Frozen Falante 30cm", price:179.99, old:229.99, rating:4.8, reviews:389, cat:"bonecas",    age:"3-5",  brand:"Hasbro",       isNew:false,
+    img:"https://picsum.photos/seed/toka_els01/400/400",
+    imgs:["https://picsum.photos/seed/toka_els01/400/400","https://picsum.photos/seed/toka_els02/400/400"],
+    desc:"Boneca Elsa de Frozen que fala frases do filme em português! Vestido com glitter e penteado icônico. Botão de ativação de som. Inclui 8 frases e músicas da animação. 30cm de altura.",
+    tags:["frozen","elsa","meninas","disney"] },
+
+  { id:20, name:"Robô Coding Interativo para Crianças", price:319.99, old:399.99, rating:4.6, reviews:123, cat:"tecnologia",age:"6-8",  brand:"Lego",         isNew:true,
+    img:"https://picsum.photos/seed/toka_rob01/400/400",
+    imgs:["https://picsum.photos/seed/toka_rob01/400/400","https://picsum.photos/seed/toka_rob02/400/400"],
+    desc:"Robô interativo que ensina os fundamentos da programação para crianças de forma lúdica. Sem necessidade de saber ler. 15 atividades progressivas. Conecta via Bluetooth ao app gratuito.",
+    tags:["robô","tecnologia","educativo","programação"] },
+
+  { id:21, name:"Mini Cozinha Infantil com 20 Acessórios", price:249.99, old:319.99, rating:4.7, reviews:234, cat:"brinquedos", age:"3-5",  brand:"Calesita",     isNew:false,
+    img:"https://picsum.photos/seed/toka_coz01/400/400",
+    imgs:["https://picsum.photos/seed/toka_coz01/400/400"],
+    desc:"Mini cozinha infantil com fogão, forno, microondas e pia. Inclui 20 acessórios (pratos, panelas, talheres). Estimula a imaginação e o jogo simbólico. Para crianças de 3 a 6 anos.",
+    tags:["cozinha","brinquedo","meninas","culinária"] },
+
+  { id:22, name:"Pikachu Pelúcia Oficial 40cm Pokémon", price:89.99,  old:119.99, rating:4.9, reviews:678, cat:"geeks",      age:"3-5",  brand:"Pokémon",      isNew:false,
+    img:"https://picsum.photos/seed/toka_pik01/400/400",
+    imgs:["https://picsum.photos/seed/toka_pik01/400/400"],
+    desc:"Pelúcia oficial do Pikachu com 40cm. Material ultra-macio e lavável à máquina. Olhos bordados. Licenciado pela The Pokémon Company. Perfeito para colecionadores e fãs da franquia.",
+    tags:["pokemon","pelúcia","geeks","colecionável"] },
+
+  { id:23, name:"Carrinho Controle Remoto 4x4 Drift RC", price:189.99, old:249.99, rating:4.6, reviews:198, cat:"veiculos",   age:"6-8",  brand:"Multilaser",   isNew:false,
+    img:"https://picsum.photos/seed/toka_rc01/400/400",
+    imgs:["https://picsum.photos/seed/toka_rc01/400/400","https://picsum.photos/seed/toka_rc02/400/400"],
+    desc:"Carrinho de controle remoto 4x4 com função drift. Velocidade máxima de 25km/h. Alcance de 30 metros. Bateria recarregável com USB inclusa. Autonomia de 30 minutos por carga.",
+    tags:["controle remoto","carro","meninos","rc"] },
+
+  { id:24, name:"Play-Doh Kit 10 Potes Coloridos", price:79.99,  old:99.99,  rating:4.8, reviews:456, cat:"brinquedos", age:"3-5",  brand:"Hasbro",       isNew:false,
+    img:"https://picsum.photos/seed/toka_pdh01/400/400",
+    imgs:["https://picsum.photos/seed/toka_pdh01/400/400"],
+    desc:"Kit Play-Doh com 10 potes de massinha colorida. Massa não tóxica e segura para crianças. Estimula a criatividade e a motricidade fina. Fácil de modelar e reutilizar. Embalagem coletiva.",
+    tags:["massinha","play-doh","criativo","argila"] },
+
+  { id:25, name:"Monopoly Banco Imobiliário Família", price:119.99, old:149.99, rating:4.8, reviews:534, cat:"jogos",     age:"9+",   brand:"Hasbro",       isNew:false,
+    img:"https://picsum.photos/seed/toka_mnp01/400/400",
+    imgs:["https://picsum.photos/seed/toka_mnp01/400/400"],
+    desc:"Monopoly - Banco Imobiliário, o clássico jogo de negócios para toda a família. Para 2 a 6 jogadores. Com peças icônicas, cartas, casas e hotéis. Regras em português. Recomendado 8 anos+.",
+    tags:["monopólio","jogo de tabuleiro","família","estratégia"] },
+
+  { id:26, name:"Brinquedo Bebê Mordedor Girafinha Sophie", price:99.99,  old:129.99, rating:4.7, reviews:289, cat:"bebe",      age:"ate-1",brand:"Fisher-Price",  isNew:false,
+    img:"https://picsum.photos/seed/toka_sph01/400/400",
+    imgs:["https://picsum.photos/seed/toka_sph01/400/400"],
+    desc:"Mordedor girafinha para bebês feito de borracha natural 100% segura e livre de BPA. Estimula os sentidos com texturas e pontos de pressão para alívio das gengivas. Do nascimento em diante.",
+    tags:["bebê","mordedor","borracha","desenvolvimento"] },
+
+  { id:27, name:"Lança Bolha de Sabão Elétrico Unicórnio", price:49.99,  old:64.99,  rating:4.5, reviews:178, cat:"brinquedos", age:"3-5",  brand:"Toyng",        isNew:true,
+    img:"https://picsum.photos/seed/toka_bub01/400/400",
+    imgs:["https://picsum.photos/seed/toka_bub01/400/400"],
+    desc:"Lança bolhas elétrico temático unicórnio. Cria centenas de bolhas coloridas por minuto. Funciona com pilhas AA. Inclui solução de bolha refil. Ideal para festas e brincadeiras ao ar livre.",
+    tags:["bolha de sabão","ar livre","festa","meninas"] },
+
+  { id:28, name:"Funko Pop! Darth Vader Star Wars", price:129.99, old:159.99, rating:4.9, reviews:367, cat:"geeks",      age:"9+",   brand:"Funko",        isNew:false,
+    img:"https://picsum.photos/seed/toka_dv01/400/400",
+    imgs:["https://picsum.photos/seed/toka_dv01/400/400"],
+    desc:"Funko Pop! do Darth Vader de Star Wars. Edição clássica com sabre de luz vermelho. Item colecionável em vinil. Altura: 9,5cm. Embalagem caixa com janela. Licenciado Disney/Lucasfilm.",
+    tags:["funko","star wars","geeks","colecionável"] },
+
+  { id:29, name:"Skate Infantil com Capacete e Proteções", price:199.99, old:259.99, rating:4.4, reviews:89,  cat:"esportes",   age:"6-8",  brand:"Atrio",        isNew:false,
+    img:"https://picsum.photos/seed/toka_sk01/400/400",
+    imgs:["https://picsum.photos/seed/toka_sk01/400/400"],
+    desc:"Kit completo de skate infantil com capacete e proteções de joelhos, cotovelos e pulsos. Rodas com rolamentos ABEC-7. Deck antiderrapante. Para crianças de 5 a 10 anos.",
+    tags:["skate","esporte","radical","capacete"] },
+
+  { id:30, name:"Kit Massinha Slime Brilhante 6 Cores", price:34.99,  old:49.99,  rating:4.6, reviews:423, cat:"brinquedos", age:"6-8",  brand:"Toyng",        isNew:true,
+    img:"https://picsum.photos/seed/toka_slm01/400/400",
+    imgs:["https://picsum.photos/seed/toka_slm01/400/400"],
+    desc:"Kit slime brilhante com 6 cores vibrantes. Textura elástica e suave. Não gruda nas mãos. Fórmula segura e não tóxica. Cada pote vem em embalagem individual. Ideal para vídeos e brincadeiras.",
+    tags:["slime","massinha","meninas","sensorial"] },
+];
+
+// ===========================
+//           ESTADO
+// ===========================
+let cartCount = 0;
+let currView = 'home';
+let prevView = 'home';
+let currCat = 'todos';
+let filteredProducts = [...PRODUCTS];
+
+// ===========================
+//          INICIAR
+// ===========================
+document.addEventListener('DOMContentLoaded', () => {
+  renderCarousel('carousel-top',    topSellers());
+  renderCarousel('carousel-new',    newArrivals());
+  renderCarousel('carousel-offers', bigOffers());
+  startHero();
+});
+
+// ===========================
+//        HERO SLIDER
+// ===========================
+let slideIdx = 0;
+const SLIDE_TOTAL = 4;
+function startHero() {
+  setInterval(() => { slideIdx = (slideIdx + 1) % SLIDE_TOTAL; moveSlide(slideIdx); }, 4500);
+}
+function goSlide(i) { slideIdx = i; moveSlide(i); }
+function moveSlide(i) {
+  const el = document.getElementById('heroSlides');
+  if (el) el.style.transform = `translateX(-${i * 100}%)`;
+  document.querySelectorAll('.hero-dot').forEach((d,idx) => d.classList.toggle('active', idx === i));
+}
+
+// ===========================
+//      FILTROS DE PRODUTO
+// ===========================
+function topSellers()  { return [...PRODUCTS].sort((a,b) => b.reviews - a.reviews).slice(0,12); }
+function newArrivals() { return PRODUCTS.filter(p => p.isNew).concat([...PRODUCTS].slice(0,6)).slice(0,12); }
+function bigOffers()   { return PRODUCTS.filter(p => p.old && (p.old - p.price)/p.old > 0.2).slice(0,12); }
+
+// ===========================
+//     RENDERIZAÇÃO CARDS
+// ===========================
+function productCardHTML(p, mini = false) {
+  const disc = p.old ? Math.round((1 - p.price/p.old) * 100) : 0;
+  const starsHtml = '★'.repeat(Math.floor(p.rating)) + (p.rating % 1 >= 0.5 ? '★' : '');
+  const inst = (p.price / 3).toFixed(2).replace('.',',');
+  const priceStr = p.price.toFixed(2).replace('.',',');
+  const oldStr = p.old ? p.old.toFixed(2).replace('.',',') : '';
+  return `
+    <div class="pcard" onclick="openProduct(${p.id})">
+      ${disc > 0 ? `<div class="pcard-disc">-${disc}%</div>` : (p.isNew ? '<div class="pcard-new">NOVO</div>' : '')}
+      <button class="pcard-wish" onclick="event.stopPropagation();toggleWish(this)" title="Favoritar">
+        <i class="far fa-heart"></i>
+      </button>
+      <img class="pcard-img" src="${p.img}" alt="${p.name}" loading="lazy">
+      <div class="pcard-body">
+        <div class="pcard-stars">${starsHtml} <span>(${p.reviews})</span></div>
+        <div class="pcard-name">${p.name}</div>
+        ${p.old ? `<div class="pcard-old">R$ ${oldStr}</div>` : ''}
+        <div class="pcard-price">R$ ${priceStr}</div>
+        <div class="pcard-inst">ou 3x de R$ ${inst} s/ juros</div>
+        <button class="btn-add" onclick="event.stopPropagation();quickAdd(${p.id})">
+          <i class="fas fa-shopping-cart"></i> adicionar
+        </button>
+      </div>
+    </div>`;
+}
+
+function renderCarousel(id, prods) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = prods.map(p => productCardHTML(p)).join('');
+}
+
+function renderGrid(id, prods) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!prods.length) {
+    el.innerHTML = `<div class="no-results" style="grid-column:1/-1">
+      <i class="fas fa-search-minus"></i>
+      <p>Nenhum produto encontrado.</p>
+      <p style="font-size:13px;margin-top:6px">Tente ajustar os filtros ou buscar outro termo.</p>
+    </div>`;
+    return;
+  }
+  el.innerHTML = prods.map(p => productCardHTML(p)).join('');
+}
+
+// ===========================
+//      VIEWS / NAVEGAÇÃO
+// ===========================
+function showView(name) {
+  prevView = currView;
+  currView = name;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const v = document.getElementById('view-' + name);
+  if (v) v.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goHome() { showView('home'); }
+
+function goBack() {
+  showView(prevView && prevView !== currView ? prevView : 'home');
+}
+
+// ===========================
+//       PÁGINA PRODUTO
+// ===========================
+function openProduct(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+
+  // Imagem principal
+  document.getElementById('pdMainImg').src = p.imgs[0];
+  document.getElementById('pdMainImg').alt = p.name;
+
+  // Miniaturas
+  document.getElementById('pdThumbs').innerHTML = p.imgs.map((img, i) =>
+    `<div class="pd-thumb ${i===0?'active':''}" onclick="switchImg(this,'${img}')">
+       <img src="${img}" alt="Foto ${i+1}">
+     </div>`
+  ).join('');
+
+  // Informações
+  document.getElementById('pdBrand').textContent = p.brand;
+  document.getElementById('pdTitle').textContent = p.name;
+
+  const starsHtml = '★'.repeat(Math.floor(p.rating)) + (p.rating % 1 >= 0.5 ? '★' : '');
+  document.getElementById('pdStars').innerHTML = `<span style="color:#FF6B00">${starsHtml}</span> ${p.rating}`;
+  document.getElementById('pdReviews').textContent = `(${p.reviews} avaliações)`;
+  document.getElementById('pdCode').textContent = `Cód: TOK-${String(p.id).padStart(4,'0')} | Categoria: ${catLabel(p.cat)} | Idade: ${ageLabel(p.age)}`;
+
+  // Preço
+  const disc = p.old ? Math.round((1-p.price/p.old)*100) : 0;
+  document.getElementById('pdOldPrice').innerHTML = p.old
+    ? `R$ ${p.old.toFixed(2).replace('.',',')} <span class="disc-tag">-${disc}%</span>` : '';
+  document.getElementById('pdPrice').textContent = `R$ ${p.price.toFixed(2).replace('.',',')}`;
+  const inst = (p.price/3).toFixed(2).replace('.',',');
+  document.getElementById('pdInst').textContent = `ou 3x de R$ ${inst} sem juros no cartão`;
+  const pix = (p.price*0.9).toFixed(2).replace('.',',');
+  document.getElementById('pdPixVal').textContent = `R$ ${pix} no PIX (10% OFF)`;
+
+  // Breadcrumb
+  document.getElementById('pdBreadcrumb').innerHTML =
+    `<a onclick="goHome()">Início</a>
+     <i class="fas fa-chevron-right"></i>
+     <a onclick="showCat('${p.cat}')">${catLabel(p.cat)}</a>
+     <i class="fas fa-chevron-right"></i>
+     ${p.name}`;
+
+  // Tab descrição
+  document.getElementById('tab-desc').innerHTML = `
+    <p>${p.desc}</p>
+    <br>
+    <p><strong>Marca:</strong> ${p.brand}</p>
+    <p><strong>Faixa etária:</strong> ${ageLabel(p.age)}</p>
+    <p><strong>Categoria:</strong> ${catLabel(p.cat)}</p>`;
+
+  // Tab especificações
+  document.getElementById('tab-spec').innerHTML = `
+    <table class="spec-tbl">
+      <tr><td>Marca</td><td>${p.brand}</td></tr>
+      <tr><td>Modelo</td><td>${p.name}</td></tr>
+      <tr><td>Código</td><td>TOK-${String(p.id).padStart(4,'0')}</td></tr>
+      <tr><td>Faixa Etária</td><td>${ageLabel(p.age)}</td></tr>
+      <tr><td>Categoria</td><td>${catLabel(p.cat)}</td></tr>
+      <tr><td>Garantia</td><td>3 meses (fabricante) + 90 dias (Toka)</td></tr>
+      <tr><td>Origem</td><td>Nacional / Importado</td></tr>
+      <tr><td>Disponibilidade</td><td>Em estoque</td></tr>
+    </table>`;
+
+  // Tab avaliações
+  document.getElementById('tab-rev').innerHTML = buildReviews(p);
+
+  // Reset tabs
+  document.querySelectorAll('.tab-nav button').forEach((b,i) => b.classList.toggle('active', i===0));
+  document.querySelectorAll('.tab-panel').forEach((pp,i) => pp.classList.toggle('active', i===0));
+
+  // Frete: reset
+  document.getElementById('cepInput').value = '';
+  document.getElementById('freightResults').classList.add('hidden');
+
+  // Relacionados
+  const rel = PRODUCTS.filter(x => x.id !== p.id && (x.cat === p.cat || x.age === p.age))
+                       .sort(() => Math.random()-.5).slice(0,10);
+  renderCarousel('carousel-related', rel.length ? rel : PRODUCTS.slice(0,10));
+
+  showView('product');
+}
+
+function switchImg(thumb, src) {
+  document.getElementById('pdMainImg').src = src;
+  document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
+  thumb.classList.add('active');
+}
+
+function openTab(btn, id) {
+  document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function buildReviews(p) {
+  const revs = [
+    { name:"Maria S.", rating:5, date:"12/03/2025", text:"Minha filha adorou! Chegou bem embalado e antes do prazo previsto. Recomendo muito a Toka dos Brinquedos!" },
+    { name:"Carlos P.", rating:4, date:"05/03/2025", text:"Produto de ótima qualidade, bem parecido com as fotos. Entrega foi rápida. Único ponto: embalagem levemente amassada, mas o produto estava perfeito." },
+    { name:"Ana L.", rating:5, date:"28/02/2025", text:"Excelente custo-benefício! Meu filho ficou encantado. Comprarei mais produtos na Toka com certeza." },
+  ];
+  return `
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:16px;background:#faf6ff;border-radius:12px">
+      <div style="text-align:center">
+        <div style="font-size:52px;font-weight:900;color:#333;line-height:1">${p.rating}</div>
+        <div style="color:#FF6B00;font-size:20px">${'★'.repeat(Math.floor(p.rating))}</div>
+        <div style="font-size:12px;color:#888;margin-top:4px">${p.reviews} avaliações</div>
+      </div>
+      <div style="flex:1">
+        ${[5,4,3,2,1].map(n => {
+          const pct = n === Math.floor(p.rating) ? 68 : n > Math.floor(p.rating)-1 ? 20 : Math.random()*15|0;
+          return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-size:12px;color:#888;width:20px">${n}★</span>
+            <div style="flex:1;height:6px;background:#eee;border-radius:3px;overflow:hidden">
+              <div style="width:${pct}%;height:100%;background:#FF6B00;border-radius:3px"></div>
+            </div>
+            <span style="font-size:11px;color:#888;width:30px">${pct}%</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+    ${revs.map(r => `
+      <div class="review-block">
+        <div class="review-name">
+          ${r.name}
+          <span style="color:#FF6B00">${'★'.repeat(r.rating)}</span>
+          <span style="font-size:11px;color:#bbb;font-weight:normal">${r.date}</span>
+        </div>
+        <p class="review-text">${r.text}</p>
+      </div>`).join('')}`;
+}
+
+// ===========================
+//     CALCULADORA DE FRETE
+// ===========================
+function maskCEP(input) {
+  let v = input.value.replace(/\D/g,'');
+  if (v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
+  input.value = v;
+}
+
+function calcFrete() {
+  const raw = document.getElementById('cepInput').value.replace(/\D/g,'');
+  if (raw.length !== 8) { showToast('⚠️ Digite um CEP válido com 8 dígitos', false); return; }
+
+  const btn = document.querySelector('.freight-row button');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Calculando...';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    btn.textContent = 'Calcular';
+    btn.disabled = false;
+
+    const prefix = parseInt(raw.slice(0,2));
+    const isSP   = prefix >= 1 && prefix <= 19;
+    const isRJ   = prefix >= 20 && prefix <= 28;
+    const isNear = isSP || isRJ;
+    const isFar  = prefix >= 69;
+
+    const priceProduct = window._currentProductPrice || 100;
+    const freeShipping = priceProduct >= 199;
+
+    const opts = [
+      {
+        icon:'fas fa-store',
+        name:'Retirar na Loja',
+        days:'Hoje em até 90 minutos',
+        price: 0
+      },
+      {
+        icon:'fas fa-bolt',
+        name:'Entrega Expressa (3h)',
+        days: isSP ? 'Disponível para SP capital' : 'Indisponível para sua região',
+        price: isSP ? (freeShipping ? 0 : 14.90) : null
+      },
+      {
+        icon:'fas fa-truck',
+        name:'Entrega Rápida',
+        days: isNear ? '1 a 2 dias úteis' : isFar ? '7 a 12 dias úteis' : '3 a 5 dias úteis',
+        price: freeShipping ? 0 : (isNear ? 9.90 : isFar ? 22.90 : 14.90)
+      },
+      {
+        icon:'fas fa-box',
+        name:'Entrega Padrão (Correios)',
+        days: isNear ? '3 a 5 dias úteis' : isFar ? '10 a 15 dias úteis' : '5 a 8 dias úteis',
+        price: freeShipping ? 0 : (isNear ? 0 : isFar ? 14.90 : 7.90)
+      },
+    ].filter(o => o.price !== null);
+
+    const el = document.getElementById('freightResults');
+    el.classList.remove('hidden');
+    el.innerHTML = `
+      ${freeShipping ? '<div style="background:#e8f5e9;color:#2e7d32;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:bold;margin-bottom:10px"><i class="fas fa-check-circle"></i> Frete grátis disponível para esse produto!</div>' : ''}
+      ${opts.map(o => `
+        <div class="freight-opt">
+          <div>
+            <div class="fo-name"><i class="${o.icon}" style="color:var(--purple);margin-right:6px"></i>${o.name}</div>
+            <div class="fo-days"><i class="far fa-calendar-alt"></i> ${o.days}</div>
+          </div>
+          <div class="fo-price ${o.price === 0 ? 'fo-free' : ''}">
+            ${o.price === 0 ? 'GRÁTIS' : 'R$ ' + o.price.toFixed(2).replace('.',',')}
+          </div>
+        </div>`).join('')}`;
+  }, 1400);
+}
+
+// ===========================
+//     CATEGORIAS E FILTROS
+// ===========================
+function showCat(cat) {
+  currCat = cat;
+  let prods;
+  if (cat === 'todos')    prods = [...PRODUCTS];
+  else if (cat === 'novidades') prods = PRODUCTS.filter(p => p.isNew);
+  else if (cat === 'ofertas')   prods = PRODUCTS.filter(p => p.old && (p.old-p.price)/p.old > 0.2);
+  else if (cat === 'brinquedos') prods = [...PRODUCTS]; // tudo
+  else prods = PRODUCTS.filter(p => p.cat === cat);
+
+  filteredProducts = prods;
+  document.getElementById('catTitle').textContent = catLabel(cat);
+  document.getElementById('catCount').textContent = `${prods.length} produto${prods.length !== 1 ? 's' : ''} encontrado${prods.length !== 1 ? 's' : ''}`;
+  renderGrid('catGrid', prods);
+
+  // Limpa filtros
+  document.querySelectorAll('.filter-panel input[type=checkbox]').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.filter-panel input[type=radio]').forEach(rb => rb.checked = false);
+  document.getElementById('fMin').value = '';
+  document.getElementById('fMax').value = '';
+
+  showView('cat');
+}
+
+function showAge(age) {
+  currCat = 'age-' + age;
+  const ageNames = {'ate-1':'Até 1 ano','1-2':'1 a 2 anos','3-5':'3 a 5 anos','6-8':'6 a 8 anos','9+':'+9 anos'};
+  const prods = PRODUCTS.filter(p => p.age === age);
+  filteredProducts = prods;
+  document.getElementById('catTitle').textContent = `Presente por Idade: ${ageNames[age] || age}`;
+  document.getElementById('catCount').textContent = `${prods.length} produto${prods.length !== 1 ? 's' : ''} encontrado${prods.length !== 1 ? 's' : ''}`;
+  renderGrid('catGrid', prods);
+  showView('cat');
+}
+
+function showBrand(brand) {
+  currCat = 'brand-' + brand;
+  const prods = PRODUCTS.filter(p => p.brand === brand || p.name.toLowerCase().includes(brand.toLowerCase()));
+  filteredProducts = prods;
+  document.getElementById('catTitle').textContent = `Marca: ${brand}`;
+  document.getElementById('catCount').textContent = `${prods.length} produto${prods.length !== 1 ? 's' : ''} encontrado${prods.length !== 1 ? 's' : ''}`;
+  renderGrid('catGrid', prods);
+  showView('cat');
+}
+
+function applyFilters() {
+  let base = currCat === 'todos' || currCat === 'brinquedos' ? [...PRODUCTS]
+           : PRODUCTS.filter(p => p.cat === currCat || (currCat.startsWith('age-') && p.age === currCat.replace('age-',''))
+             || (currCat.startsWith('brand-') && p.brand === currCat.replace('brand-',''))
+             || currCat === 'novidades' ? p.isNew : true);
+
+  // Reload base do catTitle para não perder contexto
+  if (currCat.startsWith('age-'))   base = PRODUCTS.filter(p => p.age === currCat.replace('age-',''));
+  else if (currCat.startsWith('brand-')) base = PRODUCTS.filter(p => p.brand === currCat.replace('brand-',''));
+  else if (currCat === 'novidades') base = PRODUCTS.filter(p => p.isNew);
+  else if (currCat === 'ofertas')   base = PRODUCTS.filter(p => p.old && (p.old-p.price)/p.old > 0.2);
+  else if (currCat === 'todos' || currCat === 'brinquedos') base = [...PRODUCTS];
+  else base = PRODUCTS.filter(p => p.cat === currCat);
+
+  // Faixas etárias checadas
+  const ages = [...document.querySelectorAll('.filter-panel input[type=checkbox][value="ate-1"],.filter-panel input[type=checkbox][value="1-2"],.filter-panel input[type=checkbox][value="3-5"],.filter-panel input[type=checkbox][value="6-8"],.filter-panel input[type=checkbox][value="9+"]')]
+                .filter(cb => cb.checked).map(cb => cb.value);
+  if (ages.length) base = base.filter(p => ages.includes(p.age));
+
+  // Categorias checadas
+  const cats = [...document.querySelectorAll('.filter-panel input[type=checkbox][value="bonecas"],.filter-panel input[type=checkbox][value="action"],.filter-panel input[type=checkbox][value="jogos"],.filter-panel input[type=checkbox][value="veiculos"],.filter-panel input[type=checkbox][value="bebe"],.filter-panel input[type=checkbox][value="tecnologia"],.filter-panel input[type=checkbox][value="geeks"],.filter-panel input[type=checkbox][value="esportes"]')]
+                .filter(cb => cb.checked).map(cb => cb.value);
+  if (cats.length) base = base.filter(p => cats.includes(p.cat));
+
+  // Marcas
+  const brands = [...document.querySelectorAll('.filter-panel input[type=checkbox][value="Mattel"],.filter-panel input[type=checkbox][value="LEGO"],.filter-panel input[type=checkbox][value="Hasbro"],.filter-panel input[type=checkbox][value="Fisher-Price"],.filter-panel input[type=checkbox][value="Pokémon"],.filter-panel input[type=checkbox][value="Funko"]')]
+                  .filter(cb => cb.checked).map(cb => cb.value);
+  if (brands.length) base = base.filter(p => brands.includes(p.brand));
+
+  // Preço
+  const min = parseFloat(document.getElementById('fMin').value) || 0;
+  const max = parseFloat(document.getElementById('fMax').value) || Infinity;
+  base = base.filter(p => p.price >= min && p.price <= max);
+
+  // Rating
+  const ratingEl = document.querySelector('.filter-panel input[name="fRating"]:checked');
+  if (ratingEl && ratingEl.value !== '0') {
+    const minR = parseFloat(ratingEl.value);
+    base = base.filter(p => p.rating >= minR);
+  }
+
+  filteredProducts = base;
+  document.getElementById('catCount').textContent = `${base.length} produto${base.length !== 1 ? 's' : ''} encontrado${base.length !== 1 ? 's' : ''}`;
+  renderGrid('catGrid', base);
+}
+
+function sortGrid(val) {
+  let prods = [...filteredProducts];
+  if (val === 'price-asc')  prods.sort((a,b) => a.price - b.price);
+  if (val === 'price-desc') prods.sort((a,b) => b.price - a.price);
+  if (val === 'rating')     prods.sort((a,b) => b.rating - a.rating);
+  if (val === 'discount')   prods.sort((a,b) => (b.old-b.price)/b.old - (a.old-a.price)/a.old);
+  renderGrid('catGrid', prods);
+}
+
+// ===========================
+//           BUSCA
+// ===========================
+function doSearch(e) {
+  e.preventDefault();
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) return;
+  const res = PRODUCTS.filter(p =>
+    p.name.toLowerCase().includes(q) ||
+    p.brand.toLowerCase().includes(q) ||
+    p.tags.some(t => t.toLowerCase().includes(q)) ||
+    catLabel(p.cat).toLowerCase().includes(q)
+  );
+  filteredProducts = res;
+  currCat = 'search';
+  document.getElementById('catTitle').textContent = `Resultados para "${document.getElementById('searchInput').value.trim()}"`;
+  document.getElementById('catCount').textContent = `${res.length} produto${res.length !== 1 ? 's' : ''} encontrado${res.length !== 1 ? 's' : ''}`;
+  renderGrid('catGrid', res);
+
+  // Limpa filtros
+  document.querySelectorAll('.filter-panel input[type=checkbox]').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.filter-panel input[type=radio]').forEach(rb => rb.checked = false);
+
+  showView('cat');
+}
+
+// ===========================
+//           CARRINHO
+// ===========================
+function addToCart() {
+  cartCount++;
+  document.getElementById('cartBadge').textContent = cartCount;
+  showToast('✅ Produto adicionado ao carrinho!', true);
+}
+
+function quickAdd(id) {
+  cartCount++;
+  document.getElementById('cartBadge').textContent = cartCount;
+  showToast('✅ Produto adicionado ao carrinho!', true);
+}
+
+function handleBuy() {
+  showToast('🛒 Redirecionando para o checkout...', true);
+}
+
+// ===========================
+//           WISHLIST
+// ===========================
+function toggleWish(btn) {
+  btn.classList.toggle('on');
+  const i = btn.querySelector('i');
+  i.classList.toggle('far');
+  i.classList.toggle('fas');
+  showToast(btn.classList.contains('on') ? '❤️ Adicionado aos favoritos!' : '💔 Removido dos favoritos', false);
+}
+
+// ===========================
+//            TOAST
+// ===========================
+function showToast(msg, ok) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (ok ? ' ok' : '') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ===========================
+//           HELPERS
+// ===========================
+function catLabel(cat) {
+  const MAP = {
+    bonecas:'Bonecas', jogos:'Jogos e Tabuleiro', veiculos:'Veículos',
+    action:'Ação e Aventura', bebe:'Bebê', tecnologia:'Tecnologia',
+    geeks:'Geeks e Colecionáveis', esportes:'Esportes', importados:'Importados',
+    fantasias:'Fantasias', quebra:'Quebra-cabeça', brinquedos:'Brinquedos',
+    todos:'Todos os Produtos', novidades:'Novidades', ofertas:'Ofertas Imperdíveis', search:'Busca'
+  };
+  return MAP[cat] || cat;
+}
+
+function ageLabel(age) {
+  const MAP = { 'ate-1':'Até 1 ano', '1-2':'1 a 2 anos', '3-5':'3 a 5 anos', '6-8':'6 a 8 anos', '9+':'+9 anos' };
+  return MAP[age] || age;
+}
+</script>
+</body>
+</html>
