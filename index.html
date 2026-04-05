@@ -119,7 +119,7 @@ nav { background: var(--purple-dark); }
 /* PRODUCT CARD */
 .pcard { min-width: 210px; background: white; border-radius: 14px; overflow: hidden; cursor: pointer; transition: all .2s; border: 1px solid #eee; flex-shrink: 0; position: relative; }
 .pcard:hover { box-shadow: 0 6px 24px rgba(74,36,131,.16); transform: translateY(-4px); }
-.pcard-img { width: 100%; height: 175px; object-fit: cover; display: block; background: #f0e8f8; }
+.pcard-img { width: 100%; height: 175px; display: flex; align-items: center; justify-content: center; font-size: 62px; }
 .pcard-disc { position: absolute; top: 8px; left: 8px; background: #E53935; color: white; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 20px; }
 .pcard-wish { position: absolute; top: 8px; right: 8px; background: white; border: none; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: #ccc; box-shadow: 0 1px 4px rgba(0,0,0,.15); transition: color .2s; }
 .pcard-wish:hover, .pcard-wish.on { color: #E53935; }
@@ -157,12 +157,10 @@ nav { background: var(--purple-dark); }
 
 /* Images */
 .pd-images { position: sticky; top: 108px; }
-.pd-main { width: 100%; height: 420px; background: #f5f0fa; border-radius: 16px; overflow: hidden; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
-.pd-main img { width: 100%; height: 100%; object-fit: cover; }
+.pd-main { width: 100%; height: 420px; background: #f5f0fa; border-radius: 16px; overflow: hidden; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; font-size: 130px; }
 .pd-thumbs { display: flex; gap: 8px; }
-.pd-thumb { width: 72px; height: 72px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2.5px solid transparent; transition: border-color .2s; flex-shrink: 0; }
+.pd-thumb { width: 72px; height: 72px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2.5px solid transparent; transition: border-color .2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 28px; }
 .pd-thumb.active { border-color: var(--purple); }
-.pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
 /* Info */
 .pd-brand-tag { background: #ede0ff; color: var(--purple); font-size: 12px; font-weight: bold; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
@@ -690,7 +688,7 @@ footer { background: var(--purple-dark); color: white; margin-top: 0; }
     <div class="pd-grid">
       <!-- Imagens -->
       <div class="pd-images">
-        <div class="pd-main"><img id="pdMainImg" src="" alt=""></div>
+        <div class="pd-main" id="pdMain"></div>
         <div class="pd-thumbs" id="pdThumbs"></div>
       </div>
 
@@ -893,182 +891,122 @@ footer { background: var(--purple-dark); color: white; margin-top: 0; }
 // ===========================
 let PRODUCTS = [
   { id:1,  name:"Boneca Barbie Fashionista Ruiva", price:89.99,  old:129.99, rating:4.8, reviews:234, cat:"bonecas",    age:"3-5",  brand:"Mattel",       isNew:false,
-    img:"https://picsum.photos/seed/toka_bar01/400/400",
-    imgs:["https://picsum.photos/seed/toka_bar01/400/400","https://picsum.photos/seed/toka_bar02/400/400","https://picsum.photos/seed/toka_bar03/400/400"],
     desc:"Boneca Barbie Fashionista com looks modernos e acessórios exclusivos. Estimula a criatividade e o jogo imaginativo. Inclui roupas, sapatos e acessórios incríveis. Indicado para +3 anos.",
     tags:["boneca","barbie","meninas","fashion"] },
 
   { id:2,  name:"LEGO City Quartel dos Bombeiros 500pç", price:349.99, old:449.99, rating:4.9, reviews:187, cat:"jogos",     age:"6-8",  brand:"LEGO",         isNew:true,
-    img:"https://picsum.photos/seed/toka_leg01/400/400",
-    imgs:["https://picsum.photos/seed/toka_leg01/400/400","https://picsum.photos/seed/toka_leg02/400/400"],
     desc:"Conjunto LEGO City com quartel dos bombeiros detalhado com mais de 500 peças. Inclui figuras de bombeiros, caminhão de resgate e acessórios. Estimula o raciocínio lógico e a criatividade.",
     tags:["lego","construção","meninos","city"] },
 
   { id:3,  name:"Hot Wheels Pista Looping Radical", price:159.99, old:199.99, rating:4.7, reviews:312, cat:"veiculos",   age:"6-8",  brand:"Mattel",       isNew:false,
-    img:"https://picsum.photos/seed/toka_hw01/400/400",
-    imgs:["https://picsum.photos/seed/toka_hw01/400/400","https://picsum.photos/seed/toka_hw02/400/400"],
     desc:"Pista Hot Wheels com looping duplo radical para aventuras sem fim! Inclui 1 carrinho exclusivo e suporta todos os carrinhos da linha Hot Wheels. Fácil de montar e desmontar.",
     tags:["hot wheels","pista","carros","corrida"] },
 
   { id:4,  name:"Baby Alive Chora de Verdade", price:219.99, old:279.99, rating:4.6, reviews:156, cat:"bonecas",    age:"3-5",  brand:"Hasbro",       isNew:false,
-    img:"https://picsum.photos/seed/toka_ba01/400/400",
-    imgs:["https://picsum.photos/seed/toka_ba01/400/400","https://picsum.photos/seed/toka_ba02/400/400"],
     desc:"Baby Alive que chora lágrimas de verdade! Colocando a chupeta ela para de chorar. Acompanha fraldas, mamadeira, chupeta e 10 pacotes de comidinha. Bebê realista para cuidar.",
     tags:["boneca","baby alive","meninas","bebê"] },
 
   { id:5,  name:"Quebra-Cabeça 1000pç Floresta Mágica", price:69.99,  old:89.99,  rating:4.5, reviews:98,  cat:"quebra",     age:"9+",   brand:"Grow",         isNew:false,
-    img:"https://picsum.photos/seed/toka_puz01/400/400",
-    imgs:["https://picsum.photos/seed/toka_puz01/400/400"],
     desc:"Quebra-cabeça 1000 peças com ilustração de floresta mágica encantada. Excelente para exercitar a memória, paciência e atenção. Embalagem com tampa ilustrada. Medidas montado: 68x47cm.",
     tags:["quebra-cabeça","puzzle","família","adulto"] },
 
   { id:6,  name:"Homem-Aranha Titan Hero 30cm com Som", price:129.99, old:169.99, rating:4.8, reviews:445, cat:"action",     age:"6-8",  brand:"Hasbro",       isNew:false,
-    img:"https://picsum.photos/seed/toka_sp01/400/400",
-    imgs:["https://picsum.photos/seed/toka_sp01/400/400","https://picsum.photos/seed/toka_sp02/400/400"],
     desc:"Figura do Homem-Aranha Titan Hero Serie com 30cm de altura. Com sons e falas do personagem ativados por botão. Articulado em vários pontos. Compatível com acessórios Titan Hero.",
     tags:["marvel","herói","meninos","homem-aranha"] },
 
   { id:7,  name:"Jogo UNO Clássico 112 cartas", price:39.99,  old:54.99,  rating:4.9, reviews:687, cat:"jogos",     age:"6-8",  brand:"Mattel",       isNew:false,
-    img:"https://picsum.photos/seed/toka_uno01/400/400",
-    imgs:["https://picsum.photos/seed/toka_uno01/400/400"],
     desc:"O clássico jogo de cartas UNO! Para 2 a 10 jogadores. Fácil de aprender, impossível de parar. 112 cartas com regras especiais. Diversão garantida para toda a família.",
     tags:["jogo de cartas","família","clássico","UNO"] },
 
   { id:8,  name:"Boneca LOL Surprise! Série 5", price:199.99, old:259.99, rating:4.7, reviews:321, cat:"bonecas",    age:"6-8",  brand:"MGA",          isNew:true,
-    img:"https://picsum.photos/seed/toka_lol01/400/400",
-    imgs:["https://picsum.photos/seed/toka_lol01/400/400","https://picsum.photos/seed/toka_lol02/400/400"],
     desc:"LOL Surprise com mais de 15 surpresas para descobrir! Esfera com boneca, roupinha, sapatos, acessórios, garrafa e muito mais. Cada unidade é uma surpresa única.",
     tags:["lol","boneca","surpresa","meninas"] },
 
   { id:9,  name:"Paw Patrol Carro do Chase com Figura", price:119.99, old:149.99, rating:4.6, reviews:234, cat:"veiculos",   age:"3-5",  brand:"Spin Master",  isNew:false,
-    img:"https://picsum.photos/seed/toka_paw01/400/400",
-    imgs:["https://picsum.photos/seed/toka_paw01/400/400"],
     desc:"Carro oficial do Chase da Patrulha Canina com a figura do personagem incluída. Funciona por impulso. Compatível com a pista Paw Patrol. Para crianças de 3 anos e acima.",
     tags:["patrulha canina","carro","meninos","paw patrol"] },
 
   { id:10, name:"Pokémon Deck Batalha Inicial 60 cartas", price:89.99,  old:109.99, rating:4.8, reviews:512, cat:"geeks",      age:"9+",   brand:"Pokémon",      isNew:false,
-    img:"https://picsum.photos/seed/toka_pkm01/400/400",
-    imgs:["https://picsum.photos/seed/toka_pkm01/400/400","https://picsum.photos/seed/toka_pkm02/400/400"],
     desc:"Deck de batalha Pokémon perfeito para iniciantes. Inclui 60 cartas balanceadas, guia de regras em português, ficha de dano e contador de moedas. Aprenda a jogar TCG Pokémon.",
     tags:["pokemon","cartas","geeks","colecionável"] },
 
   { id:11, name:"Fisher-Price Girafa Musical Bebê", price:149.99, old:189.99, rating:4.7, reviews:178, cat:"bebe",      age:"ate-1",brand:"Fisher-Price",  isNew:false,
-    img:"https://picsum.photos/seed/toka_fp01/400/400",
-    imgs:["https://picsum.photos/seed/toka_fp01/400/400"],
     desc:"Girafa musical Fisher-Price especial para bebês de 0 a 12 meses. Toca músicas suaves para estimular o desenvolvimento sensorial. Texturas variadas para explorar. Aprovada por pediatras.",
     tags:["bebê","musical","fisher-price","desenvolvimento"] },
 
   { id:12, name:"Drone Infantil com Câmera HD 720p", price:279.99, old:349.99, rating:4.5, reviews:89,  cat:"tecnologia",age:"9+",   brand:"Sky Kids",     isNew:true,
-    img:"https://picsum.photos/seed/toka_drn01/400/400",
-    imgs:["https://picsum.photos/seed/toka_drn01/400/400","https://picsum.photos/seed/toka_drn02/400/400"],
     desc:"Drone infantil com câmera HD 720p integrada. Fácil de controlar com protetor de hélices. Bateria recarregável com até 20 minutos de voo. Alcance de 50 metros. Modo estabilizador automático.",
     tags:["drone","tecnologia","meninos","câmera"] },
 
   { id:13, name:"Fantasia Super-Heroína Infantil Tam. M", price:79.99,  old:99.99,  rating:4.4, reviews:156, cat:"fantasias",  age:"3-5",  brand:"Sulamericana", isNew:false,
-    img:"https://picsum.photos/seed/toka_fan01/400/400",
-    imgs:["https://picsum.photos/seed/toka_fan01/400/400"],
     desc:"Fantasia de super-heroína para meninas. Tamanho M (4-6 anos). Inclui vestido com capa, tiaras e luva. Material poliéster resistente e confortável. Perfeita para festas e brincadeiras.",
     tags:["fantasia","meninas","herói","festa"] },
 
   { id:14, name:"Nerf Rival Zeus MXV-1200 12 projéteis", price:229.99, old:299.99, rating:4.6, reviews:267, cat:"action",     age:"9+",   brand:"Hasbro",       isNew:false,
-    img:"https://picsum.photos/seed/toka_nrf01/400/400",
-    imgs:["https://picsum.photos/seed/toka_nrf01/400/400","https://picsum.photos/seed/toka_nrf02/400/400"],
     desc:"Nerf Rival Zeus com velocidade de impacto de 24m/s. Carregador integrado de 12 projéteis. Mecanismo de recarga rápida. Inclui 12 bolas Rival High-Impact. Para +14 anos.",
     tags:["nerf","ação","meninos","tiro"] },
 
   { id:15, name:"Kit Esportes Bola + Raquetes Praia", price:59.99,  old:79.99,  rating:4.3, reviews:134, cat:"esportes",   age:"6-8",  brand:"Mor",          isNew:false,
-    img:"https://picsum.photos/seed/toka_esp01/400/400",
-    imgs:["https://picsum.photos/seed/toka_esp01/400/400"],
     desc:"Kit esportivo completo com bola de praia colorida e par de raquetes resistentes. Ideal para momentos de lazer em família na praia ou parque. Material resistente à água.",
     tags:["esporte","praia","família","verão"] },
 
   { id:16, name:"Funko Pop! Hermione Granger Harry Potter", price:119.99, old:149.99, rating:4.9, reviews:423, cat:"geeks",      age:"9+",   brand:"Funko",        isNew:true,
-    img:"https://picsum.photos/seed/toka_fnk01/400/400",
-    imgs:["https://picsum.photos/seed/toka_fnk01/400/400"],
     desc:"Funko Pop! da Hermione Granger de Harry Potter, versão com varinha. Item colecionável edição especial. Altura: 9,5cm. Embalagem com janela para exposição. Licenciado oficialmente.",
     tags:["funko","colecionável","geeks","harry potter"] },
 
   { id:17, name:"Bicicleta Infantil Aro 16 Rosa com Cesta", price:399.99, old:499.99, rating:4.7, reviews:312, cat:"esportes",   age:"3-5",  brand:"Caloi",        isNew:false,
-    img:"https://picsum.photos/seed/toka_bic01/400/400",
-    imgs:["https://picsum.photos/seed/toka_bic01/400/400","https://picsum.photos/seed/toka_bic02/400/400"],
     desc:"Bicicleta infantil aro 16 com rodinhas laterais removíveis. Com cesta frontal e adesivos decorativos incluídos. Para crianças de 4 a 6 anos. Freios seguros e guidão ajustável.",
     tags:["bicicleta","esporte","meninas","pedalar"] },
 
   { id:18, name:"Cubo Mágico Profissional 3x3 Speed", price:49.99,  old:69.99,  rating:4.8, reviews:567, cat:"quebra",     age:"9+",   brand:"MoYu",         isNew:false,
-    img:"https://picsum.photos/seed/toka_cub01/400/400",
-    imgs:["https://picsum.photos/seed/toka_cub01/400/400"],
     desc:"Cubo Mágico profissional 3x3 de velocidade (speedcube). Giros suaves, precisos e silenciosos. Sistema anti-trava. Ideal para competições e praticantes intermediários e avançados.",
     tags:["cubo mágico","puzzle","desafio","raciocínio"] },
 
   { id:19, name:"Boneca Elsa Frozen Falante 30cm", price:179.99, old:229.99, rating:4.8, reviews:389, cat:"bonecas",    age:"3-5",  brand:"Hasbro",       isNew:false,
-    img:"https://picsum.photos/seed/toka_els01/400/400",
-    imgs:["https://picsum.photos/seed/toka_els01/400/400","https://picsum.photos/seed/toka_els02/400/400"],
     desc:"Boneca Elsa de Frozen que fala frases do filme em português! Vestido com glitter e penteado icônico. Botão de ativação de som. Inclui 8 frases e músicas da animação. 30cm de altura.",
     tags:["frozen","elsa","meninas","disney"] },
 
   { id:20, name:"Robô Coding Interativo para Crianças", price:319.99, old:399.99, rating:4.6, reviews:123, cat:"tecnologia",age:"6-8",  brand:"Lego",         isNew:true,
-    img:"https://picsum.photos/seed/toka_rob01/400/400",
-    imgs:["https://picsum.photos/seed/toka_rob01/400/400","https://picsum.photos/seed/toka_rob02/400/400"],
     desc:"Robô interativo que ensina os fundamentos da programação para crianças de forma lúdica. Sem necessidade de saber ler. 15 atividades progressivas. Conecta via Bluetooth ao app gratuito.",
     tags:["robô","tecnologia","educativo","programação"] },
 
   { id:21, name:"Mini Cozinha Infantil com 20 Acessórios", price:249.99, old:319.99, rating:4.7, reviews:234, cat:"brinquedos", age:"3-5",  brand:"Calesita",     isNew:false,
-    img:"https://picsum.photos/seed/toka_coz01/400/400",
-    imgs:["https://picsum.photos/seed/toka_coz01/400/400"],
     desc:"Mini cozinha infantil com fogão, forno, microondas e pia. Inclui 20 acessórios (pratos, panelas, talheres). Estimula a imaginação e o jogo simbólico. Para crianças de 3 a 6 anos.",
     tags:["cozinha","brinquedo","meninas","culinária"] },
 
   { id:22, name:"Pikachu Pelúcia Oficial 40cm Pokémon", price:89.99,  old:119.99, rating:4.9, reviews:678, cat:"geeks",      age:"3-5",  brand:"Pokémon",      isNew:false,
-    img:"https://picsum.photos/seed/toka_pik01/400/400",
-    imgs:["https://picsum.photos/seed/toka_pik01/400/400"],
     desc:"Pelúcia oficial do Pikachu com 40cm. Material ultra-macio e lavável à máquina. Olhos bordados. Licenciado pela The Pokémon Company. Perfeito para colecionadores e fãs da franquia.",
     tags:["pokemon","pelúcia","geeks","colecionável"] },
 
   { id:23, name:"Carrinho Controle Remoto 4x4 Drift RC", price:189.99, old:249.99, rating:4.6, reviews:198, cat:"veiculos",   age:"6-8",  brand:"Multilaser",   isNew:false,
-    img:"https://picsum.photos/seed/toka_rc01/400/400",
-    imgs:["https://picsum.photos/seed/toka_rc01/400/400","https://picsum.photos/seed/toka_rc02/400/400"],
     desc:"Carrinho de controle remoto 4x4 com função drift. Velocidade máxima de 25km/h. Alcance de 30 metros. Bateria recarregável com USB inclusa. Autonomia de 30 minutos por carga.",
     tags:["controle remoto","carro","meninos","rc"] },
 
   { id:24, name:"Play-Doh Kit 10 Potes Coloridos", price:79.99,  old:99.99,  rating:4.8, reviews:456, cat:"brinquedos", age:"3-5",  brand:"Hasbro",       isNew:false,
-    img:"https://picsum.photos/seed/toka_pdh01/400/400",
-    imgs:["https://picsum.photos/seed/toka_pdh01/400/400"],
     desc:"Kit Play-Doh com 10 potes de massinha colorida. Massa não tóxica e segura para crianças. Estimula a criatividade e a motricidade fina. Fácil de modelar e reutilizar. Embalagem coletiva.",
     tags:["massinha","play-doh","criativo","argila"] },
 
   { id:25, name:"Monopoly Banco Imobiliário Família", price:119.99, old:149.99, rating:4.8, reviews:534, cat:"jogos",     age:"9+",   brand:"Hasbro",       isNew:false,
-    img:"https://picsum.photos/seed/toka_mnp01/400/400",
-    imgs:["https://picsum.photos/seed/toka_mnp01/400/400"],
     desc:"Monopoly - Banco Imobiliário, o clássico jogo de negócios para toda a família. Para 2 a 6 jogadores. Com peças icônicas, cartas, casas e hotéis. Regras em português. Recomendado 8 anos+.",
     tags:["monopólio","jogo de tabuleiro","família","estratégia"] },
 
   { id:26, name:"Brinquedo Bebê Mordedor Girafinha Sophie", price:99.99,  old:129.99, rating:4.7, reviews:289, cat:"bebe",      age:"ate-1",brand:"Fisher-Price",  isNew:false,
-    img:"https://picsum.photos/seed/toka_sph01/400/400",
-    imgs:["https://picsum.photos/seed/toka_sph01/400/400"],
     desc:"Mordedor girafinha para bebês feito de borracha natural 100% segura e livre de BPA. Estimula os sentidos com texturas e pontos de pressão para alívio das gengivas. Do nascimento em diante.",
     tags:["bebê","mordedor","borracha","desenvolvimento"] },
 
   { id:27, name:"Lança Bolha de Sabão Elétrico Unicórnio", price:49.99,  old:64.99,  rating:4.5, reviews:178, cat:"brinquedos", age:"3-5",  brand:"Toyng",        isNew:true,
-    img:"https://picsum.photos/seed/toka_bub01/400/400",
-    imgs:["https://picsum.photos/seed/toka_bub01/400/400"],
     desc:"Lança bolhas elétrico temático unicórnio. Cria centenas de bolhas coloridas por minuto. Funciona com pilhas AA. Inclui solução de bolha refil. Ideal para festas e brincadeiras ao ar livre.",
     tags:["bolha de sabão","ar livre","festa","meninas"] },
 
   { id:28, name:"Funko Pop! Darth Vader Star Wars", price:129.99, old:159.99, rating:4.9, reviews:367, cat:"geeks",      age:"9+",   brand:"Funko",        isNew:false,
-    img:"https://picsum.photos/seed/toka_dv01/400/400",
-    imgs:["https://picsum.photos/seed/toka_dv01/400/400"],
     desc:"Funko Pop! do Darth Vader de Star Wars. Edição clássica com sabre de luz vermelho. Item colecionável em vinil. Altura: 9,5cm. Embalagem caixa com janela. Licenciado Disney/Lucasfilm.",
     tags:["funko","star wars","geeks","colecionável"] },
 
   { id:29, name:"Skate Infantil com Capacete e Proteções", price:199.99, old:259.99, rating:4.4, reviews:89,  cat:"esportes",   age:"6-8",  brand:"Atrio",        isNew:false,
-    img:"https://picsum.photos/seed/toka_sk01/400/400",
-    imgs:["https://picsum.photos/seed/toka_sk01/400/400"],
     desc:"Kit completo de skate infantil com capacete e proteções de joelhos, cotovelos e pulsos. Rodas com rolamentos ABEC-7. Deck antiderrapante. Para crianças de 5 a 10 anos.",
     tags:["skate","esporte","radical","capacete"] },
 
   { id:30, name:"Kit Massinha Slime Brilhante 6 Cores", price:34.99,  old:49.99,  rating:4.6, reviews:423, cat:"brinquedos", age:"6-8",  brand:"Toyng",        isNew:true,
-    img:"https://picsum.photos/seed/toka_slm01/400/400",
-    imgs:["https://picsum.photos/seed/toka_slm01/400/400"],
     desc:"Kit slime brilhante com 6 cores vibrantes. Textura elástica e suave. Não gruda nas mãos. Fórmula segura e não tóxica. Cada pote vem em embalagem individual. Ideal para vídeos e brincadeiras.",
     tags:["slime","massinha","meninas","sensorial"] },
 ];
@@ -1150,7 +1088,7 @@ function productCardHTML(p, mini = false) {
       <button class="pcard-wish" onclick="event.stopPropagation();toggleWish(this)" title="Favoritar">
         <i class="far fa-heart"></i>
       </button>
-      <img class="pcard-img" src="${p.img}" alt="${p.name}" loading="lazy">
+      <div class="pcard-img" style="background:${catMeta(p.cat).colors[0]}">${catMeta(p.cat).emoji}</div>
       <div class="pcard-body">
         <div class="pcard-stars">${starsHtml} <span>(${p.reviews})</span></div>
         <div class="pcard-name">${p.name}</div>
@@ -1229,14 +1167,16 @@ function openProduct(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
 
-  // Imagem principal
-  document.getElementById('pdMainImg').src = p.imgs[0];
-  document.getElementById('pdMainImg').alt = p.name;
+  // Placeholder visual baseado na categoria
+  const meta = catMeta(p.cat);
+  const pdMain = document.getElementById('pdMain');
+  pdMain.style.background = meta.colors[0];
+  pdMain.textContent = meta.emoji;
 
-  // Miniaturas
-  document.getElementById('pdThumbs').innerHTML = p.imgs.map((img, i) =>
-    `<div class="pd-thumb ${i===0?'active':''}" onclick="switchImg(this,'${img}')">
-       <img src="${img}" alt="Foto ${i+1}">
+  // Miniaturas com variações de cor
+  document.getElementById('pdThumbs').innerHTML = meta.colors.map((color, i) =>
+    `<div class="pd-thumb ${i===0?'active':''}" style="background:${color}" onclick="switchThumb(this,'${color}','${meta.emoji}')">
+       ${meta.emoji}
      </div>`
   ).join('');
 
@@ -1307,8 +1247,10 @@ function openProduct(id) {
   showView('product');
 }
 
-function switchImg(thumb, src) {
-  document.getElementById('pdMainImg').src = src;
+function switchThumb(thumb, color, emoji) {
+  const main = document.getElementById('pdMain');
+  main.style.background = color;
+  main.textContent = emoji;
   document.querySelectorAll('.pd-thumb').forEach(t => t.classList.remove('active'));
   thumb.classList.add('active');
 }
@@ -1618,6 +1560,24 @@ function catLabel(cat) {
 function ageLabel(age) {
   const MAP = { 'ate-1':'Até 1 ano', '1-2':'1 a 2 anos', '3-5':'3 a 5 anos', '6-8':'6 a 8 anos', '9+':'+9 anos' };
   return MAP[age] || age;
+}
+
+const CAT_META = {
+  bonecas:    { emoji:'🪆', colors:['#FCE4EC','#F8BBD9','#F48FB1'] },
+  jogos:      { emoji:'🎲', colors:['#E3F2FD','#BBDEFB','#90CAF9'] },
+  veiculos:   { emoji:'🚗', colors:['#FFF3E0','#FFE0B2','#FFCC80'] },
+  quebra:     { emoji:'🧩', colors:['#EDE7F6','#D1C4E9','#B39DDB'] },
+  action:     { emoji:'🦸', colors:['#FFEBEE','#FFCDD2','#EF9A9A'] },
+  geeks:      { emoji:'🎮', colors:['#E8EAF6','#C5CAE9','#9FA8DA'] },
+  bebe:       { emoji:'👶', colors:['#E0F7FA','#B2EBF2','#80DEEA'] },
+  tecnologia: { emoji:'🤖', colors:['#E0F2F1','#B2DFDB','#80CBC4'] },
+  fantasias:  { emoji:'🎭', colors:['#FFFDE7','#FFF9C4','#FFF176'] },
+  esportes:   { emoji:'⚽', colors:['#E8F5E9','#C8E6C9','#A5D6A7'] },
+  brinquedos: { emoji:'🧸', colors:['#FFF8E1','#FFECB3','#FFE082'] },
+  importados: { emoji:'✈️', colors:['#F3E5F5','#E1BEE7','#CE93D8'] },
+};
+function catMeta(cat) {
+  return CAT_META[cat] || { emoji:'🎁', colors:['#F5F5F5','#EEEEEE','#E0E0E0'] };
 }
 </script>
 </body>
