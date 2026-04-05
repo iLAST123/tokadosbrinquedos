@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin – Toka dos Brinquedos</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--purple:#4A2483;--purple-dark:#3A1A6E;--orange:#FF6B00;--green:#00A651;--cream:#FFF5E6;--yellow:#FFD700;--red:#E53935}
@@ -382,25 +384,34 @@ function doLogout() {
 }
 
 // =====================
-//  STORAGE
+//  FIREBASE
 // =====================
-function getProds() {
-  try { return JSON.parse(localStorage.getItem('toka_produtos') || '[]'); } catch(e) { return []; }
-}
-function saveProds(arr) {
-  localStorage.setItem('toka_produtos', JSON.stringify(arr));
+const firebaseConfig = {
+  apiKey: "AIzaSyCsHMxDKTK_xoPFgH4ZGGzPhXHCXezVV0c",
+  authDomain: "toka-71370.firebaseapp.com",
+  projectId: "toka-71370",
+  storageBucket: "toka-71370.firebasestorage.app",
+  messagingSenderId: "79888568427",
+  appId: "1:79888568427:web:2113aef14a4b1d4841212e"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+async function getProds() {
+  const snap = await db.collection('produtos').get();
+  return snap.docs.map(d => d.data());
 }
 
 // =====================
 //  LOAD ADMIN
 // =====================
-function loadAdmin() {
-  renderStats();
-  renderTable();
+async function loadAdmin() {
+  await renderStats();
+  await renderTable();
 }
 
-function renderStats() {
-  const prods = getProds();
+async function renderStats() {
+  const prods = await getProds();
   document.getElementById('statTotal').textContent = prods.length;
   document.getElementById('statNew').textContent = prods.filter(p => p.isNew).length;
   document.getElementById('statOff').textContent = prods.filter(p => p.old && p.old > p.price).length;
@@ -417,10 +428,10 @@ const CAT_LABELS = {
 };
 const AGE_LABELS = {'ate-1':'Até 1 ano','1-2':'1–2 anos','3-5':'3–5 anos','6-8':'6–8 anos','9+':'9+ anos'};
 
-function renderTable() {
+async function renderTable() {
   const q = document.getElementById('searchAdmin').value.toLowerCase();
   const cat = document.getElementById('filterCat').value;
-  let prods = getProds();
+  let prods = await getProds();
 
   if (q) prods = prods.filter(p =>
     p.name.toLowerCase().includes(q) ||
@@ -518,7 +529,7 @@ function previewImg() {
   }
 }
 
-function saveProduct() {
+async function saveProduct() {
   const name  = document.getElementById('fName').value.trim();
   const cat   = document.getElementById('fCat').value;
   const age   = document.getElementById('fAge').value;
@@ -550,21 +561,18 @@ function saveProduct() {
     isNew:  document.getElementById('fIsNew').checked
   };
 
-  let prods = getProds();
   if (editingId) {
-    const idx = prods.findIndex(p => p.id === editingId);
-    if (idx !== -1) { prod.reviews = prods[idx].reviews || 0; prods[idx] = prod; }
-    else prods.push(prod);
+    const existing = await db.collection('produtos').doc(String(editingId)).get();
+    if (existing.exists) prod.reviews = existing.data().reviews || 0;
     toast('✅ Produto atualizado com sucesso!','ok');
   } else {
-    prods.push(prod);
     toast('✅ Produto adicionado com sucesso!','ok');
   }
 
-  saveProds(prods);
+  await db.collection('produtos').doc(String(prod.id)).set(prod);
   closeModal();
-  renderStats();
-  renderTable();
+  await renderStats();
+  await renderTable();
 }
 
 // =====================
@@ -583,13 +591,12 @@ function closeConfirm() {
   deleteId = null;
 }
 
-function confirmDelete() {
+async function confirmDelete() {
   if (!deleteId) return;
-  let prods = getProds().filter(p => p.id !== deleteId);
-  saveProds(prods);
+  await db.collection('produtos').doc(String(deleteId)).delete();
   closeConfirm();
-  renderStats();
-  renderTable();
+  await renderStats();
+  await renderTable();
   toast('🗑️ Produto excluído','ok');
 }
 

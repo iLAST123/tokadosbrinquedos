@@ -715,6 +715,8 @@ footer { background: var(--purple-dark); color: white; margin-top: 0; }
   </div>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
 // ===========================
 //        DADOS / PRODUTOS
@@ -901,14 +903,17 @@ let PRODUCTS = [
     tags:["slime","massinha","meninas","sensorial"] },
 ];
 
-// Mescla produtos do painel admin (localStorage)
-try {
-  const adminProds = JSON.parse(localStorage.getItem('toka_produtos') || '[]');
-  if (adminProds.length) {
-    const existingIds = new Set(PRODUCTS.map(p => p.id));
-    adminProds.forEach(p => { if (!existingIds.has(p.id)) PRODUCTS.push(p); });
-  }
-} catch(e) {}
+// Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyCsHMxDKTK_xoPFgH4ZGGzPhXHCXezVV0c",
+  authDomain: "toka-71370.firebaseapp.com",
+  projectId: "toka-71370",
+  storageBucket: "toka-71370.firebasestorage.app",
+  messagingSenderId: "79888568427",
+  appId: "1:79888568427:web:2113aef14a4b1d4841212e"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // ===========================
 //           ESTADO
@@ -922,7 +927,16 @@ let filteredProducts = [...PRODUCTS];
 // ===========================
 //          INICIAR
 // ===========================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const snap = await db.collection('produtos').get();
+    const existingIds = new Set(PRODUCTS.map(p => p.id));
+    snap.docs.forEach(d => {
+      const p = d.data();
+      if (!existingIds.has(p.id)) PRODUCTS.push(p);
+    });
+    filteredProducts = [...PRODUCTS];
+  } catch(e) {}
   renderCarousel('carousel-top',    topSellers());
   renderCarousel('carousel-new',    newArrivals());
   renderCarousel('carousel-offers', bigOffers());
